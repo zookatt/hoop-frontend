@@ -1,4 +1,6 @@
 <script setup>
+import logoHoop from "../../assets/images/logo-hoop.png";
+
 defineProps({
   title: {
     type: String,
@@ -25,7 +27,7 @@ defineProps({
       </button>
 
       <div>
-        <p class="text-lg font-bold text-(--color-primary)">HOOP</p>
+        <img :src="logoHoop" alt="HOOP" class="h-5 w-auto" />
         <p class="text-xs font-medium text-(--color-text-secondary)">
           {{ subtitle }}
         </p>
