@@ -1,0 +1,53 @@
+:root {
+  --color-primary: #6c0000;
+  --color-secondary: #b45309;
+  --color-accent: #006b3c;
+
+  --color-background: #ffffff;
+  --color-surface: #f5f7fa;
+  --color-text: #1f2937;
+  --color-text-secondary: #4b5563;
+  --color-border: #d1d5db;
+
+  --color-status-open: #b91c1c;
+  --color-status-progress: #ff994c;
+  --color-status-resolved: #047857;
+  --color-status-closed: #4576b9;
+}
+
+html {
+  color: var(--color-text);
+  background: var(--color-background);
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  min-height: 100vh;
+  color: var(--color-text);
+  background: var(--color-background);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button,
+input,
+textarea,
+select {
+  font: inherit;
+}
+
+button {
+  cursor: pointer;
+}
+
+button:disabled {
+  cursor: not-allowed;
+}
