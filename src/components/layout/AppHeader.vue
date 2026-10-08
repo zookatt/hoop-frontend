@@ -1,5 +1,6 @@
 <script setup>
 import logoHoop from "../../assets/images/logo-hoop.png";
+import BaseButton from "../ui/BaseButton.vue";
 
 defineProps({
   title: {
@@ -10,7 +11,13 @@ defineProps({
     type: String,
     default: "Administrador",
   },
+  showLogout: {
+    type: Boolean,
+    default: false,
+  },
 });
+
+const emit = defineEmits(["logout"]);
 </script>
 
 <template>
@@ -34,8 +41,19 @@ defineProps({
       </div>
     </div>
 
-    <h1 class="text-lg font-bold text-(--color-primary)">
-      {{ title }}
-    </h1>
+    <div class="flex items-center gap-3">
+      <h1 class="text-lg font-bold text-(--color-primary)">
+        {{ title }}
+      </h1>
+
+      <BaseButton
+        v-if="showLogout"
+        size="sm"
+        variant="secondary"
+        @click="emit('logout')"
+      >
+        Salir
+      </BaseButton>
+    </div>
   </header>
 </template>
