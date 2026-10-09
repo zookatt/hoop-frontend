@@ -8,11 +8,14 @@ El objetivo del frontend es consumir la API de `hoop-backend` y ofrecer una inte
 
 El proyecto frontend esta iniciado con Vue y Vite.
 
-Pendiente para el PMV:
+Implementado hasta ahora:
 
 - vista de login
 - guardado de token JWT
 - logout eliminando el token local
+
+Pendiente para el PMV:
+
 - panel segun rol
 - listado de incidencias
 - formulario de creacion de incidencia
@@ -33,11 +36,13 @@ Nota: algunas dependencias ya estan instaladas, pero no todas las funcionalidade
 
 ## Conexion con backend
 
-Backend local:
+El frontend llama a la API con ruta relativa:
 
 ```text
-http://localhost:8080/api/v1
+/api/v1
 ```
+
+En desarrollo, Vite usa proxy. Configura el destino local en `.env` usando la variable `API_PROXY_TARGET`. El archivo `.env` no debe subirse a Git.
 
 Login actual del backend:
 
