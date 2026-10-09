@@ -9,7 +9,6 @@ import BaseModal from "../../components/ui/BaseModal.vue";
 import IncidentForm from "../../components/incidents/IncidentForm.vue";
 import { getIncidents, createIncident } from "../../core/api/incidentService";
 import { getAuthUser } from "../../core/auth/authStorage";
-
 const incidents = ref([]);
 const isLoading = ref(false);
 const errorMessage = ref("");
@@ -71,9 +70,9 @@ const router = useRouter();
 function goToIncidents() {
   router.push({ name: "incidents" });
 }
+
 function countByStatus(status) {
-  return incidents.value.filter((incident) => incident.status === status)
-    .length;
+  return incidents.value.filter((incident) => incident.status === status).length;
 }
 
 async function fetchDashboardIncidents() {
