@@ -6,6 +6,13 @@ export const INCIDENT_STATUS_OPTIONS = [
   { value: "CLOSED", label: "Cerrada" },
 ];
 
+export const INCIDENT_SUMMARY_OPTIONS = [
+  { status: "OPEN", label: "Creadas", variant: "open" },
+  { status: "IN_PROGRESS", label: "En curso", variant: "progress" },
+  { status: "RESOLVED", label: "Resueltas", variant: "resolved" },
+  { status: "CLOSED", label: "Cerradas", variant: "closed" },
+];
+
 export const INCIDENT_STATUS_META = {
   OPEN: {
     label: "Creada",

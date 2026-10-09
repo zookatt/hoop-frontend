@@ -1,5 +1,5 @@
 <script setup>
-import { computed, onMounted, ref } from "vue";
+import { computed } from "vue";
 import { useRouter } from "vue-router";
 import BaseButton from "../../components/ui/BaseButton.vue";
 import DashboardSection from "../../components/dashboard/DashboardSection.vue";
@@ -7,19 +7,26 @@ import ShortcutCard from "../../components/dashboard/ShortcutCard.vue";
 import StatCard from "../../components/dashboard/StatCard.vue";
 import BaseModal from "../../components/ui/BaseModal.vue";
 import IncidentForm from "../../components/incidents/IncidentForm.vue";
-import { getIncidents, createIncident } from "../../core/api/incidentService";
+import { useCreateIncident } from "../../composables/useCreateIncident";
+import { useIncidents } from "../../composables/useIncidents";
 import { getAuthUser } from "../../core/auth/authStorage";
-const incidents = ref([]);
-const isLoading = ref(false);
-const errorMessage = ref("");
+
+const { errorMessage, fetchIncidents, incidentStats, isLoading } =
+  useIncidents();
+
+const {
+  closeCreateModal,
+  createIncidentError,
+  isCreateModalOpen,
+  isCreatingIncident,
+  openCreateModal,
+  submitCreateIncident,
+} = useCreateIncident({ onCreated: fetchIncidents });
+
 const authUser = computed(() => getAuthUser());
 
 const role = computed(() => authUser.value?.role ?? "");
 const isAdmin = computed(() => role.value === "ADMIN");
-
-const isCreateModalOpen = ref(false);
-const isCreatingIncident = ref(false);
-const createIncidentError = ref("");
 
 const dashboardTitle = computed(() => {
   const titles = {
@@ -43,65 +50,11 @@ const dashboardSubtitle = computed(() => {
   return subtitles[role.value] ?? "Gestión de incidencias";
 });
 
-const incidentStats = computed(() => [
-  {
-    value: countByStatus("OPEN"),
-    label: "Creadas",
-    variant: "open",
-  },
-  {
-    value: countByStatus("IN_PROGRESS"),
-    label: "En curso",
-    variant: "progress",
-  },
-  {
-    value: countByStatus("RESOLVED"),
-    label: "Resueltas",
-    variant: "resolved",
-  },
-  {
-    value: countByStatus("CLOSED"),
-    label: "Cerradas",
-    variant: "closed",
-  },
-]);
-
 const router = useRouter();
+
 function goToIncidents() {
   router.push({ name: "incidents" });
 }
-
-function countByStatus(status) {
-  return incidents.value.filter((incident) => incident.status === status).length;
-}
-
-async function fetchDashboardIncidents() {
-  isLoading.value = true;
-  errorMessage.value = "";
-
-  try {
-    incidents.value = await getIncidents();
-  } catch {
-    errorMessage.value = "No se ha podido cargar el resumen de incidencias.";
-  } finally {
-    isLoading.value = false;
-  }
-}
-async function submitCreateIncident(payload) {
-  isCreatingIncident.value = true;
-  createIncidentError.value = "";
-
-  try {
-    await createIncident(payload);
-    isCreateModalOpen.value = false;
-    await fetchDashboardIncidents();
-  } catch {
-    createIncidentError.value = "No se ha podido crear la incidencia.";
-  } finally {
-    isCreatingIncident.value = false;
-  }
-}
-onMounted(fetchDashboardIncidents);
 </script>
 
 <template>
@@ -152,7 +105,7 @@ onMounted(fetchDashboardIncidents);
       />
     </DashboardSection>
 
-    <BaseButton @click="isCreateModalOpen = true">
+    <BaseButton @click="openCreateModal">
       <span class="text-xl font-bold">+</span>
       <span>Crear incidencia</span>
     </BaseButton>
@@ -160,7 +113,7 @@ onMounted(fetchDashboardIncidents);
     <BaseModal
       v-if="isCreateModalOpen"
       title="Crear incidencia"
-      @close="isCreateModalOpen = false"
+      @close="closeCreateModal"
     >
       <p
         v-if="createIncidentError"

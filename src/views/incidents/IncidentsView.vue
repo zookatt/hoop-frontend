@@ -1,12 +1,30 @@
 <script setup>
+import { ref } from "vue";
 import IncidentCard from "../../components/incidents/IncidentCard.vue";
 import BaseButton from "../../components/ui/BaseButton.vue";
 import FilterButton from "../../components/ui/FilterButton.vue";
 import StatusMessage from "../../components/ui/StatusMessage.vue";
-import { useIncidents } from "./useIncidents";
+import IncidentDetailModal from "../../components/incidents/IncidentDetailModal.vue";
 
-const { errorMessage, filteredIncidents, isLoading, selectedStatus, statusOptions } =
-  useIncidents();
+import { useIncidents } from "../../composables/useIncidents";
+
+const {
+  errorMessage,
+  filteredIncidents,
+  isLoading,
+  selectedStatus,
+  statusOptions,
+} = useIncidents();
+
+const selectedIncident = ref(null);
+
+function openIncidentDetail(incident) {
+  selectedIncident.value = incident;
+}
+
+function closeIncidentDetail() {
+  selectedIncident.value = null;
+}
 </script>
 
 <template>
@@ -25,9 +43,7 @@ const { errorMessage, filteredIncidents, isLoading, selectedStatus, statusOption
       </FilterButton>
     </nav>
 
-    <StatusMessage v-if="isLoading">
-      Cargando incidencias...
-    </StatusMessage>
+    <StatusMessage v-if="isLoading"> Cargando incidencias... </StatusMessage>
 
     <StatusMessage v-else-if="errorMessage" variant="error">
       {{ errorMessage }}
@@ -42,6 +58,7 @@ const { errorMessage, filteredIncidents, isLoading, selectedStatus, statusOption
         v-for="incident in filteredIncidents"
         :key="incident.id"
         :incident="incident"
+        @select="openIncidentDetail"
       />
     </ul>
 
@@ -50,4 +67,10 @@ const { errorMessage, filteredIncidents, isLoading, selectedStatus, statusOption
       <span>Añadir incidencia</span>
     </BaseButton>
   </section>
+
+  <IncidentDetailModal
+    v-if="selectedIncident"
+    :incident="selectedIncident"
+    @close="closeIncidentDetail"
+  />
 </template>
