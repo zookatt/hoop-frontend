@@ -1,9 +1,10 @@
 <script setup>
 import { computed, ref } from "vue";
 import { useRouter } from "vue-router";
-import logoHoop from "../../assets/images/logo-hoop.png";
-import { loginUser } from "../../core/api/authService";
 import BaseButton from "../../components/ui/BaseButton.vue";
+import { loginUser } from "../../core/api/authService";
+import { getDashboardRouteForUser } from "../../core/auth/roleRoutes";
+import logoHoop from "../../assets/images/logo-hoop.png";
 
 const router = useRouter();
 
@@ -29,12 +30,12 @@ async function submitLogin() {
   errorMessage.value = "";
 
   try {
-    await loginUser({
+    const { user } = await loginUser({
       email: email.value.trim(),
       password: password.value,
     });
 
-    await router.push({ name: "incidents" });
+    await router.push(getDashboardRouteForUser(user));
   } catch {
     errorMessage.value =
       "No se ha podido iniciar sesión. Revisa email y contraseña.";
@@ -53,11 +54,7 @@ async function submitLogin() {
         <div
           class="grid h-24 w-24 place-items-center rounded-full border border-(--color-border) bg-(--color-background) p-3 shadow-sm"
         >
-          <img
-            :src="logoHoop"
-            alt="HOOP"
-            class="h-full w-full object-contain"
-          />
+          <img :src="logoHoop" alt="HOOP" class="h-full w-full object-contain" />
         </div>
 
         <h1 class="text-lg font-bold text-(--color-primary)">
@@ -72,9 +69,7 @@ async function submitLogin() {
         class="grid gap-5 rounded-lg border border-(--color-border) bg-(--color-background) p-5 shadow-md"
         @submit.prevent="submitLogin"
       >
-        <label
-          class="grid gap-2 text-xs font-bold uppercase text-(--color-text)"
-        >
+        <label class="grid gap-2 text-xs font-bold uppercase text-(--color-text)">
           Correo electrónico
           <span class="relative">
             <svg
@@ -109,9 +104,7 @@ async function submitLogin() {
           </span>
         </label>
 
-        <label
-          class="grid gap-2 text-xs font-bold uppercase text-(--color-text)"
-        >
+        <label class="grid gap-2 text-xs font-bold uppercase text-(--color-text)">
           Contraseña
           <span class="relative">
             <svg
@@ -152,9 +145,7 @@ async function submitLogin() {
             <button
               type="button"
               class="absolute right-3 top-1/2 -translate-y-1/2 text-(--color-text-secondary)"
-              :aria-label="
-                showPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'
-              "
+              :aria-label="showPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'"
               @click="showPassword = !showPassword"
             >
               <svg

@@ -1,9 +1,10 @@
 import { createRouter, createWebHistory } from "vue-router";
 import DashboardLayout from "../components/layout/DashboardLayout.vue";
-import { isAuthenticated } from "../core/auth/authStorage";
+import { getAuthUser, isAuthenticated } from "../core/auth/authStorage";
+import { getDashboardRouteForUser } from "../core/auth/roleRoutes";
 import IncidentsView from "../views/incidents/IncidentsView.vue";
 import LoginView from "../views/login/LoginView.vue";
-import AdminDashboardView from "../views/admin/AdminDashboardView.vue";
+import DashboardHomeView from "../views/dashboard/DashboardHomeView.vue";
 
 const routes = [
   {
@@ -16,7 +17,7 @@ const routes = [
   },
   {
     path: "/",
-    redirect: "/admin",
+    redirect: () => getDashboardRouteForUser(getAuthUser()),
   },
   {
     path: "/",
@@ -28,7 +29,22 @@ const routes = [
       {
         path: "admin",
         name: "admin-dashboard",
-        component: AdminDashboardView,
+        component: DashboardHomeView,
+      },
+      {
+        path: "reception",
+        name: "reception-dashboard",
+        component: DashboardHomeView,
+      },
+      {
+        path: "maintenance",
+        name: "maintenance-dashboard",
+        component: DashboardHomeView,
+      },
+      {
+        path: "cleaning",
+        name: "cleaning-dashboard",
+        component: DashboardHomeView,
       },
       {
         path: "incidents",
@@ -52,7 +68,7 @@ router.beforeEach((to) => {
   }
 
   if (to.meta.guestOnly && loggedIn) {
-    return { name: "admin-dashboard" };
+    return getDashboardRouteForUser(getAuthUser());
   }
 
   return true;

@@ -5,10 +5,37 @@ import DashboardSection from "../../components/dashboard/DashboardSection.vue";
 import ShortcutCard from "../../components/dashboard/ShortcutCard.vue";
 import StatCard from "../../components/dashboard/StatCard.vue";
 import { getIncidents } from "../../core/api/incidentService";
+import { getAuthUser } from "../../core/auth/authStorage";
 
 const incidents = ref([]);
 const isLoading = ref(false);
 const errorMessage = ref("");
+const authUser = computed(() => getAuthUser());
+
+const role = computed(() => authUser.value?.role ?? "");
+const isAdmin = computed(() => role.value === "ADMIN");
+
+const dashboardTitle = computed(() => {
+  const titles = {
+    ADMIN: "Panel de administración",
+    RECEPTION: "Panel de recepción",
+    MAINTENANCE: "Panel de mantenimiento",
+    CLEANING: "Panel de limpieza",
+  };
+
+  return titles[role.value] ?? "Panel de trabajo";
+});
+
+const dashboardSubtitle = computed(() => {
+  const subtitles = {
+    ADMIN: "Gestión interna del hotel",
+    RECEPTION: "Coordinación de incidencias",
+    MAINTENANCE: "Incidencias asignadas a mantenimiento",
+    CLEANING: "Incidencias asignadas a limpieza",
+  };
+
+  return subtitles[role.value] ?? "Gestión de incidencias";
+});
 
 const incidentStats = computed(() => [
   {
@@ -57,10 +84,10 @@ onMounted(fetchDashboardIncidents);
   <section class="mx-auto grid max-w-md gap-6 pb-6">
     <div>
       <h1 class="text-xl font-bold text-(--color-text)">
-        Panel de administración
+        {{ dashboardTitle }}
       </h1>
       <p class="mt-2 text-sm text-(--color-text-secondary)">
-        Gestión interna del hotel
+        {{ dashboardSubtitle }}
       </p>
     </div>
 
@@ -90,7 +117,7 @@ onMounted(fetchDashboardIncidents);
       </div>
     </DashboardSection>
 
-    <DashboardSection title="Usuarios" action-label="Ver todos">
+    <DashboardSection v-if="isAdmin" title="Usuarios" action-label="Ver todos">
       <ShortcutCard
         title="Gestión de usuarios"
         description="Crear, ver y bloquear usuarios"
