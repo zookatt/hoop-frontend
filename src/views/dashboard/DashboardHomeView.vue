@@ -4,7 +4,9 @@ import BaseButton from "../../components/ui/BaseButton.vue";
 import DashboardSection from "../../components/dashboard/DashboardSection.vue";
 import ShortcutCard from "../../components/dashboard/ShortcutCard.vue";
 import StatCard from "../../components/dashboard/StatCard.vue";
-import { getIncidents } from "../../core/api/incidentService";
+import BaseModal from "../../components/ui/BaseModal.vue";
+import IncidentForm from "../../components/incidents/IncidentForm.vue";
+import { getIncidents, createIncident } from "../../core/api/incidentService";
 import { getAuthUser } from "../../core/auth/authStorage";
 
 const incidents = ref([]);
@@ -14,6 +16,10 @@ const authUser = computed(() => getAuthUser());
 
 const role = computed(() => authUser.value?.role ?? "");
 const isAdmin = computed(() => role.value === "ADMIN");
+
+const isCreateModalOpen = ref(false);
+const isCreatingIncident = ref(false);
+const createIncidentError = ref("");
 
 const dashboardTitle = computed(() => {
   const titles = {
@@ -61,7 +67,8 @@ const incidentStats = computed(() => [
 ]);
 
 function countByStatus(status) {
-  return incidents.value.filter((incident) => incident.status === status).length;
+  return incidents.value.filter((incident) => incident.status === status)
+    .length;
 }
 
 async function fetchDashboardIncidents() {
@@ -76,7 +83,20 @@ async function fetchDashboardIncidents() {
     isLoading.value = false;
   }
 }
+async function submitCreateIncident(payload) {
+  isCreatingIncident.value = true;
+  createIncidentError.value = "";
 
+  try {
+    await createIncident(payload);
+    isCreateModalOpen.value = false;
+    await fetchDashboardIncidents();
+  } catch {
+    createIncidentError.value = "No se ha podido crear la incidencia.";
+  } finally {
+    isCreatingIncident.value = false;
+  }
+}
 onMounted(fetchDashboardIncidents);
 </script>
 
@@ -124,9 +144,31 @@ onMounted(fetchDashboardIncidents);
       />
     </DashboardSection>
 
-    <BaseButton>
+    <BaseButton @click="isCreateModalOpen = true">
       <span class="text-xl font-bold">+</span>
       <span>Crear incidencia</span>
     </BaseButton>
+
+    <BaseModal
+      v-if="isCreateModalOpen"
+      title="Crear incidencia"
+      @close="isCreateModalOpen = false"
+    >
+      <p
+        v-if="createIncidentError"
+        class="mb-4 rounded border border-(--color-status-open) p-3 text-sm font-medium text-(--color-status-open)"
+      >
+        {{ createIncidentError }}
+      </p>
+
+      <IncidentForm @submit="submitCreateIncident" />
+
+      <p
+        v-if="isCreatingIncident"
+        class="mt-3 text-sm font-medium text-(--color-text-secondary)"
+      >
+        Creando incidencia...
+      </p>
+    </BaseModal>
   </section>
 </template>
