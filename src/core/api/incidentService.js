@@ -5,3 +5,9 @@ export async function getIncidents() {
 
   return response.data;
 }
+
+export async function createIncident(payload) {
+  const response = await apiClient.post("/incidents", payload);
+
+  return response.data;
+}
