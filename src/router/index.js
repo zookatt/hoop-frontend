@@ -3,6 +3,7 @@ import DashboardLayout from "../components/layout/DashboardLayout.vue";
 import { isAuthenticated } from "../core/auth/authStorage";
 import IncidentsView from "../views/incidents/IncidentsView.vue";
 import LoginView from "../views/login/LoginView.vue";
+import AdminDashboardView from "../views/admin/AdminDashboardView.vue";
 
 const routes = [
   {
@@ -15,7 +16,7 @@ const routes = [
   },
   {
     path: "/",
-    redirect: "/incidents",
+    redirect: "/admin",
   },
   {
     path: "/",
@@ -24,6 +25,11 @@ const routes = [
       requiresAuth: true,
     },
     children: [
+      {
+        path: "admin",
+        name: "admin-dashboard",
+        component: AdminDashboardView,
+      },
       {
         path: "incidents",
         name: "incidents",
@@ -46,7 +52,7 @@ router.beforeEach((to) => {
   }
 
   if (to.meta.guestOnly && loggedIn) {
-    return { name: "incidents" };
+    return { name: "admin-dashboard" };
   }
 
   return true;
