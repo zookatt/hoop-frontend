@@ -3,6 +3,8 @@ defineProps({
   title: { type: String, required: true },
   actionLabel: { type: String, default: "" },
 });
+
+const emit = defineEmits(["action"]);
 </script>
 
 <template>
@@ -18,6 +20,7 @@ defineProps({
         v-if="actionLabel"
         type="button"
         class="text-xs font-bold text-(--color-primary)"
+        @click="emit('action')"
       >
         {{ actionLabel }} →
       </button>
