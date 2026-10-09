@@ -1,31 +1,56 @@
 <script setup>
+import { computed, onMounted, ref } from "vue";
 import BaseButton from "../../components/ui/BaseButton.vue";
 import DashboardSection from "../../components/dashboard/DashboardSection.vue";
 import ShortcutCard from "../../components/dashboard/ShortcutCard.vue";
 import StatCard from "../../components/dashboard/StatCard.vue";
+import { getIncidents } from "../../core/api/incidentService";
 
-const incidentStats = [
+const incidents = ref([]);
+const isLoading = ref(false);
+const errorMessage = ref("");
+
+const incidentStats = computed(() => [
   {
-    value: 1,
+    value: countByStatus("OPEN"),
     label: "Creadas",
     variant: "open",
   },
   {
-    value: 2,
+    value: countByStatus("IN_PROGRESS"),
     label: "En curso",
     variant: "progress",
   },
   {
-    value: 1,
+    value: countByStatus("RESOLVED"),
     label: "Resueltas",
     variant: "resolved",
   },
   {
-    value: 1,
+    value: countByStatus("CLOSED"),
     label: "Cerradas",
     variant: "closed",
   },
-];
+]);
+
+function countByStatus(status) {
+  return incidents.value.filter((incident) => incident.status === status).length;
+}
+
+async function fetchDashboardIncidents() {
+  isLoading.value = true;
+  errorMessage.value = "";
+
+  try {
+    incidents.value = await getIncidents();
+  } catch {
+    errorMessage.value = "No se ha podido cargar el resumen de incidencias.";
+  } finally {
+    isLoading.value = false;
+  }
+}
+
+onMounted(fetchDashboardIncidents);
 </script>
 
 <template>
@@ -40,7 +65,21 @@ const incidentStats = [
     </div>
 
     <DashboardSection title="Incidencias" action-label="Ver todas">
-      <div class="grid grid-cols-2 gap-3">
+      <p
+        v-if="isLoading"
+        class="rounded-lg border border-(--color-border) bg-(--color-background) p-4 text-sm font-medium text-(--color-text-secondary)"
+      >
+        Cargando resumen...
+      </p>
+
+      <p
+        v-else-if="errorMessage"
+        class="rounded-lg border border-(--color-status-open) bg-(--color-background) p-4 text-sm font-medium text-(--color-status-open)"
+      >
+        {{ errorMessage }}
+      </p>
+
+      <div v-else class="grid grid-cols-2 gap-3">
         <StatCard
           v-for="stat in incidentStats"
           :key="stat.label"
