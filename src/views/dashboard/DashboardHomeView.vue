@@ -1,5 +1,6 @@
 <script setup>
 import { computed, onMounted, ref } from "vue";
+import { useRouter } from "vue-router";
 import BaseButton from "../../components/ui/BaseButton.vue";
 import DashboardSection from "../../components/dashboard/DashboardSection.vue";
 import ShortcutCard from "../../components/dashboard/ShortcutCard.vue";
@@ -66,6 +67,10 @@ const incidentStats = computed(() => [
   },
 ]);
 
+const router = useRouter();
+function goToIncidents() {
+  router.push({ name: "incidents" });
+}
 function countByStatus(status) {
   return incidents.value.filter((incident) => incident.status === status)
     .length;
@@ -111,7 +116,11 @@ onMounted(fetchDashboardIncidents);
       </p>
     </div>
 
-    <DashboardSection title="Incidencias" action-label="Ver todas">
+    <DashboardSection
+      title="Incidencias"
+      action-label="Ver todas"
+      @action="goToIncidents"
+    >
       <p
         v-if="isLoading"
         class="rounded-lg border border-(--color-border) bg-(--color-background) p-4 text-sm font-medium text-(--color-text-secondary)"
