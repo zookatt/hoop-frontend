@@ -6,6 +6,7 @@ import BaseButton from "../../components/ui/BaseButton.vue";
 import StatusMessage from "../../components/ui/StatusMessage.vue";
 import { useIncidentDetail } from "../../composables/useIncidentDetail";
 import {
+  getIncidentDepartmentIcon,
   getIncidentDepartmentLabel,
   getIncidentStatusLabel,
   getIncidentStatusStyle,
@@ -79,7 +80,13 @@ const {
           <p class="text-xs font-bold uppercase text-(--color-text-secondary)">
             Departamento
           </p>
-          <p class="mt-1 text-sm font-bold text-(--color-text)">
+          <p class="mt-1 inline-flex items-center gap-2 text-sm font-bold text-(--color-text)">
+            <img
+              v-if="getIncidentDepartmentIcon(incident.department).src"
+              :src="getIncidentDepartmentIcon(incident.department).src"
+              :alt="getIncidentDepartmentIcon(incident.department).label"
+              class="size-9 shrink-0 object-contain"
+            />
             {{ getIncidentDepartmentLabel(incident.department) }}
           </p>
         </div>
