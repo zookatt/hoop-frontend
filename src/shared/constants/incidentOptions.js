@@ -47,3 +47,7 @@ export const INCIDENT_PRIORITY_OPTIONS = [
   { value: "MEDIUM", label: "Media" },
   { value: "HIGH", label: "Alta" },
 ];
+
+export const INCIDENT_STATUS_CHANGE_OPTIONS = INCIDENT_STATUS_OPTIONS.filter(
+  (option) => option.value !== "ALL",
+);
