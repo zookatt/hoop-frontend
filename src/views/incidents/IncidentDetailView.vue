@@ -1,9 +1,11 @@
 <script setup>
+import { computed } from "vue";
 import IncidentAssignmentForm from "../../components/incidents/IncidentAssignmentForm.vue";
 import IncidentBasicEditForm from "../../components/incidents/IncidentBasicEditForm.vue";
 import IncidentStatusForm from "../../components/incidents/IncidentStatusForm.vue";
 import BaseButton from "../../components/ui/BaseButton.vue";
 import StatusMessage from "../../components/ui/StatusMessage.vue";
+import { getAuthUser } from "../../core/auth/authStorage";
 import { useIncidentDetail } from "../../composables/useIncidentDetail";
 import {
   getIncidentDepartmentIcon,
@@ -11,6 +13,12 @@ import {
   getIncidentStatusLabel,
   getIncidentStatusStyle,
 } from "../../shared/utils/incidentFormatters";
+import {
+  canAssignIncident,
+  canChangeIncidentStatus,
+  canEditIncident,
+  getAllowedStatusValues,
+} from "../../shared/utils/incidentPermissions";
 
 const {
   errorMessage,
@@ -23,6 +31,16 @@ const {
   saveErrorMessage,
   saveStatus,
 } = useIncidentDetail();
+
+const authUser = computed(() => getAuthUser());
+const role = computed(() => authUser.value?.role ?? "");
+const allowedStatusValues = computed(() => getAllowedStatusValues(role.value));
+const hasIncidentActions = computed(
+  () =>
+    canEditIncident(role.value) ||
+    canAssignIncident(role.value) ||
+    canChangeIncidentStatus(role.value),
+);
 </script>
 
 <template>
@@ -125,24 +143,31 @@ const {
         </div>
       </section>
 
-      <section class="grid gap-4 border-t border-(--color-border) pt-4">
+      <section
+        v-if="hasIncidentActions"
+        class="grid gap-4 border-t border-(--color-border) pt-4"
+      >
         <StatusMessage v-if="saveErrorMessage" variant="error">
           {{ saveErrorMessage }}
         </StatusMessage>
 
         <IncidentBasicEditForm
+          v-if="canEditIncident(role)"
           :disabled="isSaving"
           :incident="incident"
           @submit="saveBasicInfo"
         />
 
         <IncidentAssignmentForm
+          v-if="canAssignIncident(role)"
           :disabled="isSaving"
           :incident="incident"
           @submit="saveAssignment"
         />
 
         <IncidentStatusForm
+          v-if="canChangeIncidentStatus(role)"
+          :allowed-statuses="allowedStatusValues"
           :disabled="isSaving"
           :incident="incident"
           @submit="saveStatus"
