@@ -4,6 +4,7 @@ import {
   assignIncident,
   getIncidentById,
   updateIncident,
+  updateIncidentStatus,
 } from "../core/api/incidentService";
 
 export function useIncidentDetail() {
@@ -58,6 +59,19 @@ export function useIncidentDetail() {
     }
   }
 
+  async function saveStatus(status) {
+    isSaving.value = true;
+    saveErrorMessage.value = "";
+
+    try {
+      incident.value = await updateIncidentStatus(incidentId.value, status);
+    } catch {
+      saveErrorMessage.value = "No se ha podido cambiar el estado.";
+    } finally {
+      isSaving.value = false;
+    }
+  }
+
   function goBack() {
     router.push({ name: "incidents" });
   }
@@ -75,5 +89,6 @@ export function useIncidentDetail() {
     saveAssignment,
     saveBasicInfo,
     saveErrorMessage,
+    saveStatus,
   };
 }
