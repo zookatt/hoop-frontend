@@ -1,29 +1,39 @@
 <script setup>
-import { ref } from "vue";
+import { useRouter } from "vue-router";
 import IncidentCard from "../../components/incidents/IncidentCard.vue";
+import IncidentForm from "../../components/incidents/IncidentForm.vue";
 import BaseButton from "../../components/ui/BaseButton.vue";
+import BaseModal from "../../components/ui/BaseModal.vue";
 import FilterButton from "../../components/ui/FilterButton.vue";
 import StatusMessage from "../../components/ui/StatusMessage.vue";
-import IncidentDetailModal from "../../components/incidents/IncidentDetailModal.vue";
-
+import { useCreateIncident } from "../../composables/useCreateIncident";
 import { useIncidents } from "../../composables/useIncidents";
 
 const {
   errorMessage,
+  fetchIncidents,
   filteredIncidents,
   isLoading,
   selectedStatus,
   statusOptions,
 } = useIncidents();
 
-const selectedIncident = ref(null);
+const {
+  closeCreateModal,
+  createIncidentError,
+  isCreateModalOpen,
+  isCreatingIncident,
+  openCreateModal,
+  submitCreateIncident,
+} = useCreateIncident({ onCreated: fetchIncidents });
+
+const router = useRouter();
 
 function openIncidentDetail(incident) {
-  selectedIncident.value = incident;
-}
-
-function closeIncidentDetail() {
-  selectedIncident.value = null;
+  router.push({
+    name: "incident-detail",
+    params: { id: incident.id },
+  });
 }
 </script>
 
@@ -62,15 +72,31 @@ function closeIncidentDetail() {
       />
     </ul>
 
-    <BaseButton class="mt-1">
+    <BaseButton class="mt-1" @click="openCreateModal">
       <span class="text-xl font-bold">+</span>
       <span>Añadir incidencia</span>
     </BaseButton>
   </section>
 
-  <IncidentDetailModal
-    v-if="selectedIncident"
-    :incident="selectedIncident"
-    @close="closeIncidentDetail"
-  />
+  <BaseModal
+    v-if="isCreateModalOpen"
+    title="Crear incidencia"
+    @close="closeCreateModal"
+  >
+    <p
+      v-if="createIncidentError"
+      class="mb-4 rounded border border-(--color-status-open) p-3 text-sm font-medium text-(--color-status-open)"
+    >
+      {{ createIncidentError }}
+    </p>
+
+    <IncidentForm @submit="submitCreateIncident" />
+
+    <p
+      v-if="isCreatingIncident"
+      class="mt-3 text-sm font-medium text-(--color-text-secondary)"
+    >
+      Creando incidencia...
+    </p>
+  </BaseModal>
 </template>
