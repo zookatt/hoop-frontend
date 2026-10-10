@@ -36,3 +36,14 @@ export const INCIDENT_DEPARTMENT_LABELS = {
   MAINTENANCE: "Mantenimiento",
   CLEANING: "Limpieza",
 };
+
+export const INCIDENT_DEPARTMENT_OPTIONS = [
+  { value: "MAINTENANCE", label: "Mantenimiento" },
+  { value: "CLEANING", label: "Limpieza" },
+];
+
+export const INCIDENT_PRIORITY_OPTIONS = [
+  { value: "LOW", label: "Baja" },
+  { value: "MEDIUM", label: "Media" },
+  { value: "HIGH", label: "Alta" },
+];
