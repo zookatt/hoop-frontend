@@ -1,6 +1,6 @@
 import { computed, onMounted, ref } from "vue";
 import { useRoute, useRouter } from "vue-router";
-import { getIncidentById } from "../core/api/incidentService";
+import { getIncidentById, updateIncident } from "../core/api/incidentService";
 
 export function useIncidentDetail() {
   const route = useRoute();
@@ -9,6 +9,9 @@ export function useIncidentDetail() {
   const incident = ref(null);
   const isLoading = ref(false);
   const errorMessage = ref("");
+
+  const isSaving = ref(false);
+  const saveErrorMessage = ref("");
 
   const incidentId = computed(() => route.params.id);
 
@@ -25,6 +28,19 @@ export function useIncidentDetail() {
     }
   }
 
+  async function saveBasicInfo(payload) {
+    isSaving.value = true;
+    saveErrorMessage.value = "";
+
+    try {
+      incident.value = await updateIncident(incidentId.value, payload);
+    } catch {
+      saveErrorMessage.value = "No se han podido guardar los cambios.";
+    } finally {
+      isSaving.value = false;
+    }
+  }
+
   function goBack() {
     router.push({ name: "incidents" });
   }
@@ -38,5 +54,8 @@ export function useIncidentDetail() {
     incident,
     incidentId,
     isLoading,
+    isSaving,
+    saveBasicInfo,
+    saveErrorMessage,
   };
 }
