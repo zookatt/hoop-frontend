@@ -6,21 +6,22 @@ El objetivo del frontend es consumir la API de `hoop-backend` y ofrecer una inte
 
 ## Estado actual
 
-El proyecto frontend esta iniciado con Vue y Vite.
-
 Implementado hasta ahora:
 
 - vista de login
 - guardado de token JWT
 - logout eliminando el token local
-
-Pendiente para el PMV:
-
-- panel segun rol
+- rutas protegidas
+- dashboard segun rol
 - listado de incidencias
-- formulario de creacion de incidencia
-- acciones de asignacion y cambio de estado segun permisos
-- responsive mobile y desktop
+- creacion rapida de incidencias
+- pagina de detalle `/incidents/:id`
+- edicion basica de incidencias
+- asignacion de departamento, prioridad y trabajador
+- cambio de estado segun rol
+- permisos visuales por rol
+- iconos para incidencias sin asignar, mantenimiento y limpieza
+- responsive mobile-first
 
 ## Tecnologias
 
@@ -32,7 +33,7 @@ Pendiente para el PMV:
 - Tailwind CSS
 - Vitest
 
-Nota: algunas dependencias ya estan instaladas, pero no todas las funcionalidades estan implementadas todavia.
+Documentacion tecnica ampliada en [docs/frontend.md](docs/frontend.md).
 
 ## Conexion con backend
 
@@ -124,4 +125,10 @@ crear / consultar / asignar / cambiar estado de incidencias
 - `MAINTENANCE`
 - `CLEANING`
 
-Regla importante: todos los roles pueden crear incidencias, pero solo `ADMIN` y `RECEPTION` pueden cerrarlas definitivamente.
+Reglas importantes:
+
+- Todos los roles pueden crear incidencias.
+- `ADMIN` y `RECEPTION` pueden editar, asignar y cerrar incidencias.
+- `MAINTENANCE` y `CLEANING` solo ven incidencias de su departamento.
+- `MAINTENANCE` y `CLEANING` solo pueden cambiar estado a `IN_PROGRESS` o `RESOLVED`.
+- La seguridad real se valida en backend; el frontend solo oculta acciones para mejorar la experiencia.
