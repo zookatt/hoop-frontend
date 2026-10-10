@@ -1,7 +1,8 @@
 <script setup>
+import IncidentAssignmentForm from "../../components/incidents/IncidentAssignmentForm.vue";
+import IncidentBasicEditForm from "../../components/incidents/IncidentBasicEditForm.vue";
 import BaseButton from "../../components/ui/BaseButton.vue";
 import StatusMessage from "../../components/ui/StatusMessage.vue";
-import IncidentBasicEditForm from "../../components/incidents/IncidentBasicEditForm.vue";
 import { useIncidentDetail } from "../../composables/useIncidentDetail";
 import {
   getIncidentDepartmentLabel,
@@ -15,6 +16,7 @@ const {
   incident,
   isLoading,
   isSaving,
+  saveAssignment,
   saveBasicInfo,
   saveErrorMessage,
 } = useIncidentDetail();
@@ -114,7 +116,7 @@ const {
         </div>
       </section>
 
-      <section class="grid gap-3 border-t border-(--color-border) pt-4">
+      <section class="grid gap-4 border-t border-(--color-border) pt-4">
         <StatusMessage v-if="saveErrorMessage" variant="error">
           {{ saveErrorMessage }}
         </StatusMessage>
@@ -123,6 +125,12 @@ const {
           :disabled="isSaving"
           :incident="incident"
           @submit="saveBasicInfo"
+        />
+
+        <IncidentAssignmentForm
+          :disabled="isSaving"
+          :incident="incident"
+          @submit="saveAssignment"
         />
 
         <p
