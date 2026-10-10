@@ -5,6 +5,7 @@ import { getDashboardRouteForUser } from "../core/auth/roleRoutes";
 import IncidentsView from "../views/incidents/IncidentsView.vue";
 import LoginView from "../views/login/LoginView.vue";
 import DashboardHomeView from "../views/dashboard/DashboardHomeView.vue";
+import IncidentDetailView from "../views/incidents/IncidentDetailView.vue";
 
 const routes = [
   {
@@ -50,6 +51,11 @@ const routes = [
         path: "incidents",
         name: "incidents",
         component: IncidentsView,
+      },
+      {
+        path: "incidents/:id",
+        name: "incident-detail",
+        component: IncidentDetailView,
       },
     ],
   },
