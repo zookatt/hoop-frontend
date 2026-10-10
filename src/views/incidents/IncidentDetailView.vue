@@ -1,6 +1,7 @@
 <script setup>
 import BaseButton from "../../components/ui/BaseButton.vue";
 import StatusMessage from "../../components/ui/StatusMessage.vue";
+import IncidentBasicEditForm from "../../components/incidents/IncidentBasicEditForm.vue";
 import { useIncidentDetail } from "../../composables/useIncidentDetail";
 import {
   getIncidentDepartmentLabel,
@@ -8,7 +9,15 @@ import {
   getIncidentStatusStyle,
 } from "../../shared/utils/incidentFormatters";
 
-const { errorMessage, goBack, incident, isLoading } = useIncidentDetail();
+const {
+  errorMessage,
+  goBack,
+  incident,
+  isLoading,
+  isSaving,
+  saveBasicInfo,
+  saveErrorMessage,
+} = useIncidentDetail();
 </script>
 
 <template>
@@ -103,6 +112,25 @@ const { errorMessage, goBack, incident, isLoading } = useIncidentDetail();
             }}
           </p>
         </div>
+      </section>
+
+      <section class="grid gap-3 border-t border-(--color-border) pt-4">
+        <StatusMessage v-if="saveErrorMessage" variant="error">
+          {{ saveErrorMessage }}
+        </StatusMessage>
+
+        <IncidentBasicEditForm
+          :disabled="isSaving"
+          :incident="incident"
+          @submit="saveBasicInfo"
+        />
+
+        <p
+          v-if="isSaving"
+          class="text-sm font-medium text-(--color-text-secondary)"
+        >
+          Guardando cambios...
+        </p>
       </section>
     </article>
   </section>
