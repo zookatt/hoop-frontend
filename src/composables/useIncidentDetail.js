@@ -1,6 +1,10 @@
 import { computed, onMounted, ref } from "vue";
 import { useRoute, useRouter } from "vue-router";
-import { getIncidentById, updateIncident } from "../core/api/incidentService";
+import {
+  assignIncident,
+  getIncidentById,
+  updateIncident,
+} from "../core/api/incidentService";
 
 export function useIncidentDetail() {
   const route = useRoute();
@@ -41,6 +45,19 @@ export function useIncidentDetail() {
     }
   }
 
+  async function saveAssignment(payload) {
+    isSaving.value = true;
+    saveErrorMessage.value = "";
+
+    try {
+      incident.value = await assignIncident(incidentId.value, payload);
+    } catch {
+      saveErrorMessage.value = "No se ha podido guardar la asignación.";
+    } finally {
+      isSaving.value = false;
+    }
+  }
+
   function goBack() {
     router.push({ name: "incidents" });
   }
@@ -55,6 +72,7 @@ export function useIncidentDetail() {
     incidentId,
     isLoading,
     isSaving,
+    saveAssignment,
     saveBasicInfo,
     saveErrorMessage,
   };
