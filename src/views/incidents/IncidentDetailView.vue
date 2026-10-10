@@ -1,6 +1,7 @@
 <script setup>
 import IncidentAssignmentForm from "../../components/incidents/IncidentAssignmentForm.vue";
 import IncidentBasicEditForm from "../../components/incidents/IncidentBasicEditForm.vue";
+import IncidentStatusForm from "../../components/incidents/IncidentStatusForm.vue";
 import BaseButton from "../../components/ui/BaseButton.vue";
 import StatusMessage from "../../components/ui/StatusMessage.vue";
 import { useIncidentDetail } from "../../composables/useIncidentDetail";
@@ -19,6 +20,7 @@ const {
   saveAssignment,
   saveBasicInfo,
   saveErrorMessage,
+  saveStatus,
 } = useIncidentDetail();
 </script>
 
@@ -131,6 +133,12 @@ const {
           :disabled="isSaving"
           :incident="incident"
           @submit="saveAssignment"
+        />
+
+        <IncidentStatusForm
+          :disabled="isSaving"
+          :incident="incident"
+          @submit="saveStatus"
         />
 
         <p
