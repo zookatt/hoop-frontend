@@ -12,6 +12,10 @@ const props = defineProps({
     type: Object,
     required: true,
   },
+  allowedStatuses: {
+    type: Array,
+    default: () => [],
+  },
 });
 
 const emit = defineEmits(["submit"]);
@@ -45,7 +49,9 @@ function submitForm() {
         class="h-11 rounded border border-(--color-border) px-3 text-sm text-(--color-text) outline-none focus:border-(--color-primary)"
       >
         <option
-          v-for="option in INCIDENT_STATUS_CHANGE_OPTIONS"
+          v-for="option in INCIDENT_STATUS_CHANGE_OPTIONS.filter((statusOption) =>
+            allowedStatuses.includes(statusOption.value),
+          )"
           :key="option.value"
           :value="option.value"
         >
