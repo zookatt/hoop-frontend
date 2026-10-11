@@ -50,12 +50,17 @@ defineProps({
         </p>
         <div class="mt-2 flex items-center gap-2">
           <img
+            v-if="incident.department"
             :src="getIncidentDepartmentIcon(incident.department)"
             alt=""
             class="size-7 object-contain"
           />
           <p class="text-sm font-bold text-(--color-text)">
-            {{ getIncidentDepartmentLabel(incident.department) }}
+            {{
+              incident.department
+                ? getIncidentDepartmentLabel(incident.department)
+                : "Sin asignar"
+            }}
           </p>
         </div>
       </div>
