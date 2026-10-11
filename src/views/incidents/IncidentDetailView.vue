@@ -1,11 +1,9 @@
 <script setup>
-import { computed } from "vue";
 import IncidentAssignmentForm from "../../components/incidents/IncidentAssignmentForm.vue";
 import IncidentBasicEditForm from "../../components/incidents/IncidentBasicEditForm.vue";
 import IncidentStatusForm from "../../components/incidents/IncidentStatusForm.vue";
 import BaseButton from "../../components/ui/BaseButton.vue";
 import StatusMessage from "../../components/ui/StatusMessage.vue";
-import { getAuthUser } from "../../core/auth/authStorage";
 import { useIncidentDetail } from "../../composables/useIncidentDetail";
 import {
   getIncidentDepartmentIcon,
@@ -13,13 +11,7 @@ import {
   getIncidentStatusLabel,
   getIncidentStatusStyle,
 } from "../../shared/utils/incidentFormatters";
-import {
-  canAssignIncident,
-  canChangeIncidentStatus,
-  canEditIncident,
-  getAllowedStatusValues,
-} from "../../shared/utils/incidentPermissions";
-
+import { useIncidentPermissions } from "../../composables/useIncidentPermissions";
 const {
   errorMessage,
   goBack,
@@ -32,15 +24,8 @@ const {
   saveStatus,
 } = useIncidentDetail();
 
-const authUser = computed(() => getAuthUser());
-const role = computed(() => authUser.value?.role ?? "");
-const allowedStatusValues = computed(() => getAllowedStatusValues(role.value));
-const hasIncidentActions = computed(
-  () =>
-    canEditIncident(role.value) ||
-    canAssignIncident(role.value) ||
-    canChangeIncidentStatus(role.value),
-);
+const { allowedStatusValues, canAssign, canChangeStatus, canEdit, hasActions } =
+  useIncidentPermissions();
 </script>
 
 <template>
@@ -98,7 +83,9 @@ const hasIncidentActions = computed(
           <p class="text-xs font-bold uppercase text-(--color-text-secondary)">
             Departamento
           </p>
-          <p class="mt-1 inline-flex items-center gap-2 text-sm font-bold text-(--color-text)">
+          <p
+            class="mt-1 inline-flex items-center gap-2 text-sm font-bold text-(--color-text)"
+          >
             <img
               v-if="getIncidentDepartmentIcon(incident.department).src"
               :src="getIncidentDepartmentIcon(incident.department).src"
@@ -144,7 +131,7 @@ const hasIncidentActions = computed(
       </section>
 
       <section
-        v-if="hasIncidentActions"
+        v-if="hasActions"
         class="grid gap-4 border-t border-(--color-border) pt-4"
       >
         <StatusMessage v-if="saveErrorMessage" variant="error">
@@ -152,21 +139,21 @@ const hasIncidentActions = computed(
         </StatusMessage>
 
         <IncidentBasicEditForm
-          v-if="canEditIncident(role)"
+          v-if="canEdit"
           :disabled="isSaving"
           :incident="incident"
           @submit="saveBasicInfo"
         />
 
         <IncidentAssignmentForm
-          v-if="canAssignIncident(role)"
+          v-if="canAssign"
           :disabled="isSaving"
           :incident="incident"
           @submit="saveAssignment"
         />
 
         <IncidentStatusForm
-          v-if="canChangeIncidentStatus(role)"
+          v-if="canChangeStatus"
           :allowed-statuses="allowedStatusValues"
           :disabled="isSaving"
           :incident="incident"
