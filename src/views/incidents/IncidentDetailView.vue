@@ -1,7 +1,5 @@
 <script setup>
-import IncidentAssignmentForm from "../../components/incidents/IncidentAssignmentForm.vue";
-import IncidentBasicEditForm from "../../components/incidents/IncidentBasicEditForm.vue";
-import IncidentStatusForm from "../../components/incidents/IncidentStatusForm.vue";
+import IncidentActionsSection from "../../components/incidents/IncidentActionsSection.vue";
 import BaseButton from "../../components/ui/BaseButton.vue";
 import StatusMessage from "../../components/ui/StatusMessage.vue";
 import { useIncidentDetail } from "../../composables/useIncidentDetail";
@@ -38,43 +36,19 @@ const { allowedStatusValues, canAssign, canChangeStatus, canEdit, hasActions } =
     <article v-else-if="incident" class="grid gap-4">
       <IncidentDetailSummary :incident="incident" />
 
-      <section
+      <IncidentActionsSection
         v-if="hasActions"
-        class="grid gap-4 border-t border-(--color-border) pt-4"
-      >
-        <StatusMessage v-if="saveErrorMessage" variant="error">
-          {{ saveErrorMessage }}
-        </StatusMessage>
-
-        <IncidentBasicEditForm
-          v-if="canEdit"
-          :disabled="isSaving"
-          :incident="incident"
-          @submit="saveBasicInfo"
-        />
-
-        <IncidentAssignmentForm
-          v-if="canAssign"
-          :disabled="isSaving"
-          :incident="incident"
-          @submit="saveAssignment"
-        />
-
-        <IncidentStatusForm
-          v-if="canChangeStatus"
-          :allowed-statuses="allowedStatusValues"
-          :disabled="isSaving"
-          :incident="incident"
-          @submit="saveStatus"
-        />
-
-        <p
-          v-if="isSaving"
-          class="text-sm font-medium text-(--color-text-secondary)"
-        >
-          Guardando cambios...
-        </p>
-      </section>
+        :allowed-status-values="allowedStatusValues"
+        :can-assign="canAssign"
+        :can-change-status="canChangeStatus"
+        :can-edit="canEdit"
+        :incident="incident"
+        :is-saving="isSaving"
+        :save-error-message="saveErrorMessage"
+        @save-assignment="saveAssignment"
+        @save-basic-info="saveBasicInfo"
+        @save-status="saveStatus"
+      />
     </article>
   </section>
 </template>
