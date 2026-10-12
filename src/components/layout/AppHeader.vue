@@ -17,7 +17,7 @@ defineProps({
   },
 });
 
-const emit = defineEmits(["logout"]);
+const emit = defineEmits(["home", "logout"]);
 </script>
 
 <template>
@@ -33,12 +33,17 @@ const emit = defineEmits(["logout"]);
         <span class="text-2xl">☰</span>
       </button>
 
-      <div>
+      <button
+        type="button"
+        class="text-left"
+        aria-label="Volver al panel"
+        @click="emit('home')"
+      >
         <img :src="logoHoop" alt="HOOP" class="h-5 w-auto" />
         <p class="text-xs font-medium text-(--color-text-secondary)">
           {{ subtitle }}
         </p>
-      </div>
+      </button>
     </div>
 
     <div class="flex items-center gap-3">

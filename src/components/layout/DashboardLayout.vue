@@ -3,10 +3,15 @@ import { computed } from "vue";
 import { useRouter } from "vue-router";
 import AppHeader from "./AppHeader.vue";
 import { clearAuthSession, getAuthUser } from "../../core/auth/authStorage";
+import { getDashboardRouteForUser } from "../../core/auth/roleRoutes";
 
 const router = useRouter();
 const authUser = computed(() => getAuthUser());
 const subtitle = computed(() => authUser.value?.role || authUser.value?.email || "Usuario");
+
+async function goHome() {
+  await router.push(getDashboardRouteForUser(authUser.value));
+}
 
 async function logout() {
   clearAuthSession();
@@ -20,6 +25,7 @@ async function logout() {
       title="Incidencias"
       :subtitle="subtitle"
       show-logout
+      @home="goHome"
       @logout="logout"
     />
 
