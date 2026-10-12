@@ -22,7 +22,7 @@ const { allowedStatusValues, canAssign, canChangeStatus, canEdit, hasActions } =
 </script>
 
 <template>
-  <section class="mx-auto grid max-w-md gap-4 pb-6">
+  <section class="mx-auto grid max-w-md gap-4 pb-6 md:max-w-3xl lg:max-w-5xl">
     <BaseButton variant="secondary" size="sm" @click="goBack">
       Volver
     </BaseButton>
@@ -33,7 +33,10 @@ const { allowedStatusValues, canAssign, canChangeStatus, canEdit, hasActions } =
       {{ errorMessage }}
     </StatusMessage>
 
-    <article v-else-if="incident" class="grid gap-4">
+    <article
+      v-else-if="incident"
+      class="grid gap-4 lg:grid-cols-2 lg:items-start"
+    >
       <IncidentDetailSummary :incident="incident" />
 
       <IncidentActionsSection

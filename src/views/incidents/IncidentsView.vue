@@ -44,10 +44,21 @@ function openIncidentDetail(incident) {
 </script>
 
 <template>
-  <section class="mx-auto flex max-w-md flex-col gap-4 pb-6">
-    <BaseButton variant="secondary" size="sm" @click="goToDashboard">
-      Volver al panel
-    </BaseButton>
+  <section class="mx-auto flex max-w-md flex-col gap-4 pb-6 md:max-w-3xl lg:max-w-5xl">
+    <div class="flex items-center justify-between gap-3">
+      <BaseButton variant="secondary" size="sm" @click="goToDashboard">
+        Volver al panel
+      </BaseButton>
+
+      <BaseButton
+        class="hidden md:flex md:w-auto"
+        size="sm"
+        @click="openCreateModal"
+      >
+        <span class="text-xl font-bold">+</span>
+        <span>Añadir incidencia</span>
+      </BaseButton>
+    </div>
 
     <nav
       class="flex gap-2 overflow-x-auto pb-1"
@@ -73,7 +84,7 @@ function openIncidentDetail(incident) {
       No hay incidencias para este filtro.
     </StatusMessage>
 
-    <ul v-else class="grid gap-3">
+    <ul v-else class="grid gap-3 md:grid-cols-2 xl:grid-cols-3">
       <IncidentCard
         v-for="incident in filteredIncidents"
         :key="incident.id"
@@ -82,7 +93,7 @@ function openIncidentDetail(incident) {
       />
     </ul>
 
-    <BaseButton class="mt-1" @click="openCreateModal">
+    <BaseButton class="mt-1 md:hidden" @click="openCreateModal">
       <span class="text-xl font-bold">+</span>
       <span>Añadir incidencia</span>
     </BaseButton>
