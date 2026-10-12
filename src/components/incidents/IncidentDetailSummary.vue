@@ -11,6 +11,26 @@ defineProps({
     required: true,
   },
 });
+
+function getUserName(name, id) {
+  if (name) {
+    return name;
+  }
+
+  if (id) {
+    return `Usuario ${id}`;
+  }
+
+  return "Sin asignar";
+}
+
+function getUserMeta(id, roleName) {
+  if (!id) {
+    return "";
+  }
+
+  return `ID ${id} - ${roleName ?? "Sin rol"}`;
+}
 </script>
 
 <template>
@@ -73,20 +93,51 @@ defineProps({
         <p class="text-xs font-bold uppercase text-(--color-text-secondary)">
           Creada por
         </p>
-        <p class="mt-2 text-sm font-bold text-(--color-text)">
-          Usuario {{ incident.createdByUserId }}
-        </p>
+        <div class="mt-2 grid gap-1">
+          <p class="text-sm font-bold text-(--color-text)">
+            {{ getUserName(incident.createdByUserName, incident.createdByUserId) }}
+          </p>
+          <p class="text-xs font-bold text-(--color-text-secondary)">
+            {{
+              getUserMeta(
+                incident.createdByUserId,
+                incident.createdByUserRoleName,
+              )
+            }}
+          </p>
+        </div>
       </div>
 
       <div class="rounded-lg border border-(--color-border) p-3">
         <p class="text-xs font-bold uppercase text-(--color-text-secondary)">
           Asignada a
         </p>
-        <p class="mt-2 text-sm font-bold text-(--color-text)">
-          <template v-if="incident.assignedToUserId">
-            Usuario {{ incident.assignedToUserId }}
-          </template>
-          <template v-else>Sin asignar</template>
+        <div
+          v-if="incident.assignedToUserId"
+          class="mt-2 grid gap-1"
+        >
+          <p class="text-sm font-bold text-(--color-text)">
+            {{
+              getUserName(
+                incident.assignedToUserName,
+                incident.assignedToUserId,
+              )
+            }}
+          </p>
+          <p class="text-xs font-bold text-(--color-text-secondary)">
+            {{
+              getUserMeta(
+                incident.assignedToUserId,
+                incident.assignedToUserRoleName,
+              )
+            }}
+          </p>
+        </div>
+        <p
+          v-else
+          class="mt-2 text-sm font-bold text-(--color-text)"
+        >
+          Sin asignar
         </p>
       </div>
     </section>
