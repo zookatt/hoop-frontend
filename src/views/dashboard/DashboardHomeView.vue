@@ -23,15 +23,15 @@ const {
   submitCreateIncident,
 } = useCreateIncident({ onCreated: fetchIncidents });
 
+const router = useRouter();
 const authUser = computed(() => getAuthUser());
-
 const role = computed(() => authUser.value?.role ?? "");
 const isAdmin = computed(() => role.value === "ADMIN");
 
 const dashboardTitle = computed(() => {
   const titles = {
-    ADMIN: "Panel de administración",
-    RECEPTION: "Panel de recepción",
+    ADMIN: "Panel de administracion",
+    RECEPTION: "Panel de recepcion",
     MAINTENANCE: "Panel de mantenimiento",
     CLEANING: "Panel de limpieza",
   };
@@ -41,19 +41,21 @@ const dashboardTitle = computed(() => {
 
 const dashboardSubtitle = computed(() => {
   const subtitles = {
-    ADMIN: "Gestión interna del hotel",
-    RECEPTION: "Coordinación de incidencias",
+    ADMIN: "Gestion interna del hotel",
+    RECEPTION: "Coordinacion de incidencias",
     MAINTENANCE: "Incidencias asignadas a mantenimiento",
     CLEANING: "Incidencias asignadas a limpieza",
   };
 
-  return subtitles[role.value] ?? "Gestión de incidencias";
+  return subtitles[role.value] ?? "Gestion de incidencias";
 });
-
-const router = useRouter();
 
 function goToIncidents() {
   router.push({ name: "incidents" });
+}
+
+function goToUsers() {
+  router.push({ name: "admin-users" });
 }
 </script>
 
@@ -98,10 +100,16 @@ function goToIncidents() {
       </div>
     </DashboardSection>
 
-    <DashboardSection v-if="isAdmin" title="Usuarios" action-label="Ver todos">
+    <DashboardSection
+      v-if="isAdmin"
+      title="Usuarios"
+      action-label="Ver todos"
+      @action="goToUsers"
+    >
       <ShortcutCard
-        title="Gestión de usuarios"
+        title="Gestion de usuarios"
         description="Crear, ver y bloquear usuarios"
+        @click="goToUsers"
       />
     </DashboardSection>
 
