@@ -60,7 +60,7 @@ function goToUsers() {
 </script>
 
 <template>
-  <section class="mx-auto grid max-w-md gap-6 pb-6">
+  <section class="mx-auto grid max-w-md gap-6 pb-6 md:max-w-3xl lg:max-w-5xl">
     <div>
       <h1 class="text-xl font-bold text-(--color-text)">
         {{ dashboardTitle }}
@@ -89,7 +89,7 @@ function goToUsers() {
         {{ errorMessage }}
       </p>
 
-      <div v-else class="grid grid-cols-2 gap-3">
+      <div v-else class="grid grid-cols-2 gap-3 md:grid-cols-4">
         <StatCard
           v-for="stat in incidentStats"
           :key="stat.label"
@@ -100,23 +100,25 @@ function goToUsers() {
       </div>
     </DashboardSection>
 
-    <DashboardSection
-      v-if="isAdmin"
-      title="Usuarios"
-      action-label="Ver todos"
-      @action="goToUsers"
-    >
-      <ShortcutCard
-        title="Gestion de usuarios"
-        description="Crear, ver y bloquear usuarios"
-        @click="goToUsers"
-      />
-    </DashboardSection>
+    <div class="grid gap-4 md:grid-cols-1 md:items-end">
+      <DashboardSection
+        v-if="isAdmin"
+        title="Usuarios"
+        action-label="Ver todos"
+        @action="goToUsers"
+      >
+        <ShortcutCard
+          title="Gestion de usuarios"
+          description="Crear, ver y bloquear usuarios"
+          @click="goToUsers"
+        />
+      </DashboardSection>
 
-    <BaseButton @click="openCreateModal">
-      <span class="text-xl font-bold">+</span>
-      <span>Crear incidencia</span>
-    </BaseButton>
+      <BaseButton class="md:self-end" @click="openCreateModal">
+        <span class="text-xl font-bold">+</span>
+        <span>Crear incidencia</span>
+      </BaseButton>
+    </div>
 
     <BaseModal
       v-if="isCreateModalOpen"
