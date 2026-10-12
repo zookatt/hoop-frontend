@@ -1,10 +1,12 @@
 <script setup>
-import { reactive, watch } from "vue";
+import { computed, reactive, watch } from "vue";
 import BaseButton from "../ui/BaseButton.vue";
+import StatusMessage from "../ui/StatusMessage.vue";
 import {
   INCIDENT_DEPARTMENT_OPTIONS,
   INCIDENT_PRIORITY_OPTIONS,
 } from "../../shared/constants/incidentOptions";
+import { filterAssignableUsersByDepartment } from "../../shared/utils/userFilters";
 
 const props = defineProps({
   disabled: {
@@ -15,6 +17,18 @@ const props = defineProps({
     type: Object,
     required: true,
   },
+  isLoadingUsers: {
+    type: Boolean,
+    default: false,
+  },
+  users: {
+    type: Array,
+    default: () => [],
+  },
+  usersErrorMessage: {
+    type: String,
+    default: "",
+  },
 });
 
 const emit = defineEmits(["submit"]);
@@ -23,6 +37,34 @@ const form = reactive({
   department: "",
   priority: "",
   assignedToUserId: "",
+});
+
+const filteredUsers = computed(() =>
+  filterAssignableUsersByDepartment(props.users, form.department),
+);
+
+const isWorkerSelectDisabled = computed(
+  () => props.disabled || props.isLoadingUsers || !form.department,
+);
+
+const isSubmitDisabled = computed(
+  () => props.disabled || isWorkerSelectDisabled.value || !form.assignedToUserId,
+);
+
+const workerPlaceholder = computed(() => {
+  if (!form.department) {
+    return "Selecciona primero departamento";
+  }
+
+  if (props.isLoadingUsers) {
+    return "Cargando trabajadores";
+  }
+
+  if (filteredUsers.value.length === 0) {
+    return "No hay trabajadores disponibles";
+  }
+
+  return "Selecciona trabajador";
 });
 
 watch(
@@ -42,6 +84,28 @@ function submitForm() {
     assignedToUserId: Number(form.assignedToUserId),
   });
 }
+
+watch(
+  [() => form.department, () => props.users],
+  ([department]) => {
+    if (!department) {
+      form.assignedToUserId = "";
+      return;
+    }
+
+    if (props.users.length === 0) {
+      return;
+    }
+
+    const currentUserIsValid = filteredUsers.value.some(
+      (user) => String(user.id) === String(form.assignedToUserId),
+    );
+
+    if (!currentUserIsValid) {
+      form.assignedToUserId = "";
+    }
+  },
+);
 </script>
 
 <template>
@@ -90,18 +154,33 @@ function submitForm() {
 
     <label class="grid gap-2 text-xs font-bold uppercase text-(--color-text)">
       Usuario asignado
-      <input
+      <select
         v-model="form.assignedToUserId"
-        type="number"
-        min="1"
         required
-        :disabled="disabled"
-        placeholder="ID del trabajador"
+        :disabled="isWorkerSelectDisabled"
         class="h-11 rounded border border-(--color-border) px-3 text-sm text-(--color-text) outline-none placeholder:text-(--color-text-secondary) focus:border-(--color-primary)"
-      />
+      >
+        <option disabled value="">
+          {{ workerPlaceholder }}
+        </option>
+        <option
+          v-for="user in filteredUsers"
+          :key="user.id"
+          :value="user.id"
+        >
+          {{ user.name }} - {{ user.email }}
+        </option>
+      </select>
     </label>
 
-    <BaseButton type="submit" :disabled="disabled">
+    <StatusMessage
+      v-if="usersErrorMessage"
+      variant="error"
+    >
+      {{ usersErrorMessage }}
+    </StatusMessage>
+
+    <BaseButton type="submit" :disabled="isSubmitDisabled">
       Guardar asignación
     </BaseButton>
   </form>
