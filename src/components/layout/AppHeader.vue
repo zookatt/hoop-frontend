@@ -1,9 +1,12 @@
 <script setup>
-import { computed, ref } from "vue";
+import { ref } from "vue";
+import closeIcon from "../../assets/images/cerrar.png";
 import logoHoop from "../../assets/images/logo-hoop.png";
+import menuIcon from "../../assets/images/menu.png";
 import BaseButton from "../ui/BaseButton.vue";
+import AppSidebar from "./AppSidebar.vue";
 
-const props = defineProps({
+defineProps({
   title: {
     type: String,
     default: "Incidencias",
@@ -24,20 +27,29 @@ const props = defineProps({
     type: Object,
     default: null,
   },
+  isSidebarOpen: {
+    type: Boolean,
+    default: false,
+  },
 });
 
-const emit = defineEmits(["home", "incidents", "logout", "profile", "users"]);
+const emit = defineEmits([
+  "home",
+  "incidents",
+  "logout",
+  "profile",
+  "toggle-sidebar",
+  "users",
+]);
 
 const isMenuOpen = ref(false);
 
-const userEmail = computed(() => props.user?.email || "");
-const userName = computed(
-  () => props.user?.name || userEmail.value.split("@")[0] || "Usuario",
-);
-const userInitial = computed(() => userName.value.charAt(0).toUpperCase());
-
 function closeMenu() {
   isMenuOpen.value = false;
+}
+
+function openMobileMenu() {
+  isMenuOpen.value = true;
 }
 
 function selectMenuItem(eventName) {
@@ -55,9 +67,24 @@ function selectMenuItem(eventName) {
         type="button"
         aria-label="Abrir menu"
         class="flex h-10 w-10 items-center justify-center rounded-md text-(--color-text) md:hidden"
-        @click="isMenuOpen = true"
+        @click="openMobileMenu"
       >
-        <span class="text-2xl">☰</span>
+        <img :src="menuIcon" alt="" class="h-6 w-6 object-contain" />
+      </button>
+
+      <button
+        type="button"
+        aria-label="Abrir o cerrar menu lateral"
+        class="hidden h-10 w-10 items-center justify-center rounded-md text-(--color-text) md:flex"
+        @click="emit('toggle-sidebar')"
+      >
+        <img
+          v-if="isSidebarOpen"
+          :src="closeIcon"
+          alt=""
+          class="h-5 w-5 object-contain"
+        />
+        <img v-else :src="menuIcon" alt="" class="h-7 w-7 object-contain" />
       </button>
 
       <button
@@ -90,195 +117,42 @@ function selectMenuItem(eventName) {
   </header>
 
   <Teleport to="body">
-    <div
-      v-if="isMenuOpen"
-      class="fixed inset-0 z-50 flex md:hidden"
-      role="dialog"
-      aria-modal="true"
+    <Transition
+      enter-active-class="transition duration-300 ease-out"
+      enter-from-class="-translate-x-full opacity-0"
+      enter-to-class="translate-x-0 opacity-100"
+      leave-active-class="transition duration-200 ease-in"
+      leave-from-class="translate-x-0 opacity-100"
+      leave-to-class="-translate-x-full opacity-0"
     >
-      <button
-        type="button"
-        class="absolute inset-0 bg-black/45 backdrop-blur-[2px]"
-        aria-label="Cerrar menu"
-        @click="closeMenu"
-      />
-
-      <aside
-        class="relative z-10 flex h-full w-[72vw] min-w-[232px] max-w-[280px] flex-col bg-(--color-background) shadow-2xl"
+      <div
+        v-if="isMenuOpen"
+        class="fixed inset-0 z-50 flex md:hidden"
+        role="dialog"
+        aria-modal="true"
       >
-        <div class="bg-(--color-primary) px-5 py-7 text-white">
-          <div class="mb-5 flex items-center justify-between gap-4">
-            <p class="text-lg font-bold">HOOP</p>
+        <button
+          type="button"
+          class="absolute inset-0 bg-black/45 backdrop-blur-[2px]"
+          aria-label="Cerrar menu"
+          @click="closeMenu"
+        />
 
-            <button
-              type="button"
-              class="grid h-9 w-9 place-items-center rounded-full bg-white/20 text-lg font-bold"
-              aria-label="Cerrar menu"
-              @click="closeMenu"
-            >
-              ×
-            </button>
-          </div>
-
-          <div class="flex items-center gap-3">
-            <span
-              class="grid h-9 w-9 place-items-center rounded-full bg-white/20 text-sm font-bold"
-            >
-              {{ userInitial }}
-            </span>
-
-            <span>
-              <span class="block text-sm font-bold leading-tight">
-                {{ userName }}
-              </span>
-              <span class="block max-w-40 truncate text-xs text-white/80">
-                {{ userEmail }}
-              </span>
-              <span class="block text-[11px] text-white/70">
-                {{ subtitle }}
-              </span>
-            </span>
-          </div>
-        </div>
-
-        <nav class="grid gap-2 px-4 py-5 text-sm font-bold">
-          <button
-            type="button"
-            class="flex items-center gap-3 rounded-lg px-3 py-3 text-(--color-text-secondary)"
-            @click="selectMenuItem('home')"
-          >
-            <svg
-              class="h-5 w-5"
-              viewBox="0 0 24 24"
-              fill="none"
-              aria-hidden="true"
-            >
-              <path
-                d="M4 4h6v6H4V4Zm10 0h6v6h-6V4ZM4 14h6v6H4v-6Zm10 0h6v6h-6v-6Z"
-                stroke="currentColor"
-                stroke-width="1.8"
-                stroke-linejoin="round"
-              />
-            </svg>
-            Inicio
-          </button>
-
-          <button
-            type="button"
-            class="flex items-center gap-3 rounded-lg px-3 py-3 text-(--color-text-secondary)"
-            @click="selectMenuItem('incidents')"
-          >
-            <svg
-              class="h-5 w-5"
-              viewBox="0 0 24 24"
-              fill="none"
-              aria-hidden="true"
-            >
-              <path
-                d="M12 4 3.5 19h17L12 4Z"
-                stroke="currentColor"
-                stroke-width="1.8"
-                stroke-linejoin="round"
-              />
-              <path
-                d="M12 9v4m0 3h.01"
-                stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-              />
-            </svg>
-            Incidencias
-          </button>
-
-          <button
-            v-if="showUsersLink"
-            type="button"
-            class="flex items-center gap-3 rounded-lg px-3 py-3 text-(--color-text-secondary)"
-            @click="selectMenuItem('users')"
-          >
-            <svg
-              class="h-5 w-5"
-              viewBox="0 0 24 24"
-              fill="none"
-              aria-hidden="true"
-            >
-              <path
-                d="M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8Z"
-                stroke="currentColor"
-                stroke-width="1.8"
-              />
-              <path
-                d="M5 21a7 7 0 0 1 14 0"
-                stroke="currentColor"
-                stroke-width="1.8"
-                stroke-linecap="round"
-              />
-            </svg>
-            Usuarios
-          </button>
-
-          <button
-            type="button"
-            class="hidden items-center justify-between rounded-lg bg-red-50 px-3 py-3 text-(--color-primary)"
-            @click="selectMenuItem('profile')"
-          >
-            <span class="flex items-center gap-3">
-              <svg
-                class="h-5 w-5"
-                viewBox="0 0 24 24"
-                fill="none"
-                aria-hidden="true"
-              >
-                <path
-                  d="M12 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8Z"
-                  stroke="currentColor"
-                  stroke-width="1.8"
-                />
-                <path
-                  d="M5 21a7 7 0 0 1 14 0"
-                  stroke="currentColor"
-                  stroke-width="1.8"
-                  stroke-linecap="round"
-                />
-              </svg>
-              Perfil
-            </span>
-
-            <span class="h-1.5 w-1.5 rounded-full bg-(--color-primary)" />
-          </button>
-        </nav>
-
-        <div class="mt-auto border-t border-(--color-border) p-4">
-          <button
-            type="button"
-            class="flex items-center gap-3 px-3 py-3 text-sm font-bold text-(--color-primary)"
-            @click="selectMenuItem('logout')"
-          >
-            <svg
-              class="h-5 w-5"
-              viewBox="0 0 24 24"
-              fill="none"
-              aria-hidden="true"
-            >
-              <path
-                d="M10 6H6v12h4"
-                stroke="currentColor"
-                stroke-width="1.8"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-              />
-              <path
-                d="M14 8l4 4-4 4m4-4H9"
-                stroke="currentColor"
-                stroke-width="1.8"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-              />
-            </svg>
-            Cerrar sesion
-          </button>
-        </div>
-      </aside>
-    </div>
+        <AppSidebar
+          class="relative z-10 w-[72vw] min-w-232px max-w-280px"
+          :subtitle="subtitle"
+          :user="user"
+          show-close
+          :show-logout="showLogout"
+          :show-users-link="showUsersLink"
+          @close="closeMenu"
+          @home="selectMenuItem('home')"
+          @incidents="selectMenuItem('incidents')"
+          @logout="selectMenuItem('logout')"
+          @profile="selectMenuItem('profile')"
+          @users="selectMenuItem('users')"
+        />
+      </div>
+    </Transition>
   </Teleport>
 </template>
