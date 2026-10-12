@@ -1,5 +1,4 @@
 <script setup>
-import { computed } from "vue";
 import { useInitialPasswordChangeForm } from "../../composables/useInitialPasswordChangeForm";
 import BaseButton from "../ui/BaseButton.vue";
 import StatusMessage from "../ui/StatusMessage.vue";
@@ -22,24 +21,14 @@ const props = defineProps({
 const emit = defineEmits(["cancel", "submit"]);
 
 const {
+  canSubmit,
   confirmPassword,
-  getPayload,
-  isValid,
   newPassword,
   showConfirmPassword,
   showNewPassword,
+  submitForm,
   validationMessage,
-} = useInitialPasswordChangeForm();
-
-const canSubmit = computed(() => isValid.value && !props.isLoading);
-
-function submitForm() {
-  if (!canSubmit.value) {
-    return;
-  }
-
-  emit("submit", getPayload());
-}
+} = useInitialPasswordChangeForm(props, emit);
 </script>
 
 <template>
