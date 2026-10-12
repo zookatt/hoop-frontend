@@ -1,10 +1,13 @@
 <script setup>
+import { ref } from "vue";
 import IncidentActionsSection from "../../components/incidents/IncidentActionsSection.vue";
 import BaseButton from "../../components/ui/BaseButton.vue";
+import BaseModal from "../../components/ui/BaseModal.vue";
 import StatusMessage from "../../components/ui/StatusMessage.vue";
 import { useIncidentDetail } from "../../composables/useIncidentDetail";
 import IncidentDetailSummary from "../../components/incidents/IncidentDetailSummary.vue";
 import { useIncidentPermissions } from "../../composables/useIncidentPermissions";
+
 const {
   errorMessage,
   goBack,
@@ -20,6 +23,36 @@ const {
 
 const { allowedStatusValues, canAssign, canChangeStatus, canEdit, hasActions } =
   useIncidentPermissions();
+
+const isCloseConfirmOpen = ref(false);
+const pendingStatus = ref(null);
+
+function requestStatusSave(status) {
+  if (status === "CLOSED") {
+    pendingStatus.value = status;
+    isCloseConfirmOpen.value = true;
+    return;
+  }
+
+  saveStatus(status);
+}
+
+function cancelCloseConfirm() {
+  pendingStatus.value = null;
+  isCloseConfirmOpen.value = false;
+}
+
+async function confirmCloseIncident() {
+  if (!pendingStatus.value) {
+    return;
+  }
+
+  const wasSaved = await saveStatus(pendingStatus.value);
+
+  if (wasSaved) {
+    cancelCloseConfirm();
+  }
+}
 </script>
 
 <template>
@@ -52,8 +85,52 @@ const { allowedStatusValues, canAssign, canChangeStatus, canEdit, hasActions } =
         :save-success-message="saveSuccessMessage"
         @save-assignment="saveAssignment"
         @save-basic-info="saveBasicInfo"
-        @save-status="saveStatus"
+        @save-status="requestStatusSave"
       />
     </article>
   </section>
+
+  <BaseModal
+    v-if="isCloseConfirmOpen"
+    title="Cerrar incidencia"
+    @close="cancelCloseConfirm"
+  >
+    <div class="grid gap-4">
+      <p class="text-sm leading-6 text-(--color-text-secondary)">
+        Estas seguro de que quieres cerrar esta incidencia?
+      </p>
+
+      <p
+        class="rounded-lg border border-(--color-primary) bg-(--color-primary-light) p-3 text-sm font-bold text-(--color-primary)"
+      >
+        Las incidencias cerradas no se podran volver a abrir ni editar.
+      </p>
+
+      <StatusMessage
+        v-if="saveErrorMessage"
+        variant="error"
+      >
+        {{ saveErrorMessage }}
+      </StatusMessage>
+
+      <div class="grid gap-3 sm:grid-cols-2">
+        <BaseButton
+          type="button"
+          variant="secondary"
+          :disabled="isSaving"
+          @click="cancelCloseConfirm"
+        >
+          Cancelar
+        </BaseButton>
+
+        <BaseButton
+          type="button"
+          :disabled="isSaving"
+          @click="confirmCloseIncident"
+        >
+          {{ isSaving ? "Cerrando..." : "Cerrar incidencia" }}
+        </BaseButton>
+      </div>
+    </div>
+  </BaseModal>
 </template>

@@ -74,8 +74,10 @@ export function useIncidentDetail() {
     try {
       incident.value = await updateIncidentStatus(incidentId.value, status);
       saveSuccessMessage.value = "Estado actualizado correctamente.";
+      return true;
     } catch {
       saveErrorMessage.value = "No se ha podido cambiar el estado.";
+      return false;
     } finally {
       isSaving.value = false;
     }
