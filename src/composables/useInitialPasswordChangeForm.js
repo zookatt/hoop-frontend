@@ -1,6 +1,6 @@
 import { computed, ref } from "vue";
 
-export function useInitialPasswordChangeForm() {
+export function useInitialPasswordChangeForm(props, emit) {
   const newPassword = ref("");
   const confirmPassword = ref("");
   const showNewPassword = ref(false);
@@ -12,11 +12,11 @@ export function useInitialPasswordChangeForm() {
     }
 
     if (newPassword.value.length < 8) {
-      return "La nueva contraseña debe tener al menos 8 caracteres.";
+      return "La nueva contrasena debe tener al menos 8 caracteres.";
     }
 
     if (newPassword.value !== confirmPassword.value) {
-      return "Las contraseñas no coinciden.";
+      return "Las contrasenas no coinciden.";
     }
 
     return "";
@@ -29,19 +29,25 @@ export function useInitialPasswordChangeForm() {
       validationMessage.value === "",
   );
 
-  function getPayload() {
-    return {
+  const canSubmit = computed(() => isValid.value && !props.isLoading);
+
+  function submitForm() {
+    if (!canSubmit.value) {
+      return;
+    }
+
+    emit("submit", {
       newPassword: newPassword.value,
-    };
+    });
   }
 
   return {
+    canSubmit,
     confirmPassword,
-    getPayload,
-    isValid,
     newPassword,
     showConfirmPassword,
     showNewPassword,
+    submitForm,
     validationMessage,
   };
 }
