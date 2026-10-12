@@ -97,18 +97,13 @@ http://localhost:5173
 npm run dev      # Arrancar entorno de desarrollo
 npm run build    # Compilar para produccion
 npm run preview  # Previsualizar la compilacion
+npm run test:unit # Ejecutar pruebas unitarias y de integracion
+npm run test:coverage # Ejecutar pruebas y comprobar cobertura minima del 70 %
 ```
 
-## Comandos pendientes
-
-Estos comandos se podran anadir cuando se configure linting y tests en `package.json`:
-
-```bash
-npm run lint
-npm run format
-npm run test:unit
-npm run test:coverage
-```
+La cobertura minima del 70 % se aplica a autenticacion, utilidades de dominio y
+flujos centrales de incidencias/login. Los tests de componentes verifican tambien
+la interaccion del formulario de login.
 
 ## Flujo esperado del PMV
 
