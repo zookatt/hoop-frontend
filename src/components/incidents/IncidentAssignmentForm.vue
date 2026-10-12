@@ -55,6 +55,7 @@ function submitForm() {
       <select
         v-model="form.department"
         required
+        :disabled="disabled"
         class="h-11 rounded border border-(--color-border) px-3 text-sm text-(--color-text) outline-none focus:border-(--color-primary)"
       >
         <option disabled value="">Selecciona departamento</option>
@@ -73,6 +74,7 @@ function submitForm() {
       <select
         v-model="form.priority"
         required
+        :disabled="disabled"
         class="h-11 rounded border border-(--color-border) px-3 text-sm text-(--color-text) outline-none focus:border-(--color-primary)"
       >
         <option disabled value="">Selecciona prioridad</option>
@@ -93,6 +95,7 @@ function submitForm() {
         type="number"
         min="1"
         required
+        :disabled="disabled"
         placeholder="ID del trabajador"
         class="h-11 rounded border border-(--color-border) px-3 text-sm text-(--color-text) outline-none placeholder:text-(--color-text-secondary) focus:border-(--color-primary)"
       />

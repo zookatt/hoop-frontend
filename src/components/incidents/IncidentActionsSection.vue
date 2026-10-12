@@ -1,10 +1,11 @@
 <script setup>
+import { computed } from "vue";
 import IncidentAssignmentForm from "./IncidentAssignmentForm.vue";
 import IncidentBasicEditForm from "./IncidentBasicEditForm.vue";
 import IncidentStatusForm from "./IncidentStatusForm.vue";
 import StatusMessage from "../ui/StatusMessage.vue";
 
-defineProps({
+const props = defineProps({
   allowedStatusValues: {
     type: Array,
     default: () => [],
@@ -40,6 +41,9 @@ defineProps({
 });
 
 defineEmits(["save-assignment", "save-basic-info", "save-status"]);
+
+const isClosed = computed(() => props.incident.status === "CLOSED");
+const actionsDisabled = computed(() => props.isSaving || isClosed.value);
 </script>
 
 <template>
@@ -52,16 +56,20 @@ defineEmits(["save-assignment", "save-basic-info", "save-status"]);
       {{ saveSuccessMessage }}
     </StatusMessage>
 
+    <StatusMessage v-if="isClosed">
+      Incidencia cerrada. No se puede editar ni cambiar.
+    </StatusMessage>
+
     <IncidentBasicEditForm
       v-if="canEdit"
-      :disabled="isSaving"
+      :disabled="actionsDisabled"
       :incident="incident"
       @submit="$emit('save-basic-info', $event)"
     />
 
     <IncidentAssignmentForm
       v-if="canAssign"
-      :disabled="isSaving"
+      :disabled="actionsDisabled"
       :incident="incident"
       @submit="$emit('save-assignment', $event)"
     />
@@ -69,7 +77,7 @@ defineEmits(["save-assignment", "save-basic-info", "save-status"]);
     <IncidentStatusForm
       v-if="canChangeStatus"
       :allowed-statuses="allowedStatusValues"
-      :disabled="isSaving"
+      :disabled="actionsDisabled"
       :incident="incident"
       @submit="$emit('save-status', $event)"
     />

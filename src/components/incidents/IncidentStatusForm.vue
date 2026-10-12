@@ -46,6 +46,7 @@ function submitForm() {
       <select
         v-model="status"
         required
+        :disabled="disabled"
         class="h-11 rounded border border-(--color-border) px-3 text-sm text-(--color-text) outline-none focus:border-(--color-primary)"
       >
         <option

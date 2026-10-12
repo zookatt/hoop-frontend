@@ -52,6 +52,7 @@ function submitForm() {
         v-model="form.title"
         type="text"
         required
+        :disabled="disabled"
         class="h-11 rounded border border-(--color-border) px-3 text-sm text-(--color-text) outline-none focus:border-(--color-primary)"
       />
     </label>
@@ -62,6 +63,7 @@ function submitForm() {
         v-model="form.description"
         required
         rows="4"
+        :disabled="disabled"
         class="rounded border border-(--color-border) px-3 py-3 text-sm text-(--color-text) outline-none focus:border-(--color-primary)"
       />
     </label>
@@ -72,6 +74,7 @@ function submitForm() {
         v-model="form.roomNumber"
         type="text"
         required
+        :disabled="disabled"
         class="h-11 rounded border border-(--color-border) px-3 text-sm text-(--color-text) outline-none focus:border-(--color-primary)"
       />
     </label>
