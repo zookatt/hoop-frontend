@@ -8,9 +8,18 @@ import { getDashboardRouteForUser } from "../../core/auth/roleRoutes";
 const router = useRouter();
 const authUser = computed(() => getAuthUser());
 const subtitle = computed(() => authUser.value?.role || authUser.value?.email || "Usuario");
+const showUsersLink = computed(() => authUser.value?.role === "ADMIN");
 
 async function goHome() {
   await router.push(getDashboardRouteForUser(authUser.value));
+}
+
+async function goToIncidents() {
+  await router.push({ name: "incidents" });
+}
+
+async function goToUsers() {
+  await router.push({ name: "admin-users" });
 }
 
 async function logout() {
@@ -24,9 +33,14 @@ async function logout() {
     <AppHeader
       title="Incidencias"
       :subtitle="subtitle"
+      :user="authUser"
       show-logout
+      :show-users-link="showUsersLink"
       @home="goHome"
+      @incidents="goToIncidents"
       @logout="logout"
+      @profile="goHome"
+      @users="goToUsers"
     />
 
     <main class="px-4 py-4">
