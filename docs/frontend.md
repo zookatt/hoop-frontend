@@ -39,6 +39,7 @@ Detalle / edicion de incidencia
 | `/cleaning` | `DashboardHomeView` | Panel de limpieza |
 | `/incidents` | `IncidentsView` | Listado de incidencias |
 | `/incidents/:id` | `IncidentDetailView` | Detalle, edicion, asignacion y cambio de estado |
+| `/admin/users` | `AdminUsersView` | Gestion basica de usuarios para administrador |
 
 Las rutas privadas usan `DashboardLayout` y requieren token guardado.
 
@@ -65,6 +66,8 @@ src/core/api/apiClient.js
 ```
 
 Si una respuesta devuelve `401 Unauthorized`, el frontend limpia la sesion local.
+
+Si el backend responde `409 Conflict` en el login porque el usuario tiene password temporal, el frontend muestra el formulario de cambio de password inicial. Despues del cambio, vuelve a pedir token automaticamente con la nueva password.
 
 ## Incidencias
 
@@ -116,6 +119,42 @@ La pagina `/incidents/:id` permite:
 - cambiar estado
 
 Estas acciones se muestran segun rol.
+
+Cuando una incidencia se cambia a `CLOSED`, el frontend muestra un modal de confirmacion. Las incidencias cerradas quedan bloqueadas visualmente: los campos y botones de edicion, asignacion y estado se desactivan.
+
+El backend tambien protege esta regla: una incidencia cerrada no se puede editar, reasignar ni reabrir.
+
+### Asignacion de trabajador
+
+En el PMV, la asignacion se hace asi:
+
+1. `ADMIN` o `RECEPTION` elige departamento.
+2. El frontend carga usuarios desde `GET /api/v1/users`.
+3. Si el departamento es mantenimiento, solo muestra trabajadores con rol `MAINTENANCE`.
+4. Si el departamento es limpieza, solo muestra trabajadores con rol `CLEANING`.
+5. Al guardar, el frontend envia `assignedToUserId` al backend.
+
+Esto evita escribir manualmente el id del trabajador.
+
+### Textos en castellano
+
+El backend envia enums tecnicos como:
+
+```text
+LOW
+MAINTENANCE
+CLEANING
+ADMIN
+```
+
+El frontend los muestra en castellano mediante formateadores:
+
+```text
+Baja
+Mantenimiento
+Limpieza
+Administrador
+```
 
 ## Permisos visuales por rol
 
@@ -177,12 +216,22 @@ components/ui/FilterButton.vue
 components/ui/StatusMessage.vue
 ```
 
+Gestion de usuarios:
+
+```text
+components/users/AdminUsersSection.vue
+components/users/UserCreateForm.vue
+```
+
 ## Composables
 
 ```text
 composables/useIncidents.js
 composables/useCreateIncident.js
 composables/useIncidentDetail.js
+composables/useAssignableUsers.js
+composables/useAdminUsers.js
+composables/useLoginFlow.js
 ```
 
 Responsabilidades:
@@ -190,6 +239,9 @@ Responsabilidades:
 - `useIncidents`: carga listado, filtros y resumen por estado.
 - `useCreateIncident`: crea incidencias y controla el modal de creacion.
 - `useIncidentDetail`: carga detalle, guarda edicion, asignacion y estado.
+- `useAssignableUsers`: carga usuarios para asignar trabajador segun departamento.
+- `useAdminUsers`: carga roles, lista usuarios y crea nuevos usuarios.
+- `useLoginFlow`: controla login y cambio de password inicial.
 
 ## Estado actual del PMV frontend
 
@@ -207,10 +259,20 @@ Implementado:
 - cambio de estado
 - permisos visuales por rol
 - iconos por departamento/asignacion
+- confirmacion antes de cerrar incidencia
+- bloqueo visual de acciones en incidencias cerradas
+- gestion de usuarios para `ADMIN`: listado y creacion
+- cambio de password inicial cuando el backend devuelve `409 Conflict`
+- traduccion visual de roles, prioridades, estados y departamentos
 - layout mobile-first
+- adaptacion sencilla a tablet y desktop
 
 Pendiente o mejora futura:
 
-- gestion visual completa de usuarios
+- editar datos de usuario
+- cambiar rol de usuario desde frontend
+- desactivar usuario desde frontend
 - mensajes de error mas especificos segun respuesta del backend
 - tests de componentes y flujos principales
+- dashboard con estadisticas
+- historial avanzado de incidencias cerradas

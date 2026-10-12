@@ -21,19 +21,25 @@ Implementado hasta ahora:
 - cambio de estado segun rol
 - permisos visuales por rol
 - iconos para incidencias sin asignar, mantenimiento y limpieza
+- confirmacion antes de cerrar incidencia
+- bloqueo visual de incidencias cerradas
+- gestion de usuarios para administrador: listado y creacion
+- cambio de password inicial
+- textos visibles en castellano para roles, prioridades, estados y departamentos
 - responsive mobile-first
 
 ## Tecnologias
 
 - Vue 3
 - Vite
-- Pinia
 - Vue Router
 - Axios
 - Tailwind CSS
 - Vitest
 
 Documentacion tecnica ampliada en [docs/frontend.md](docs/frontend.md).
+
+Resumen del estado del PMV en [docs/project_status.md](docs/project_status.md).
 
 ## Conexion con backend
 
