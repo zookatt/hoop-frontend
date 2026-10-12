@@ -82,6 +82,13 @@ El backend ya devuelve las incidencias:
 
 Por eso el frontend no aplica reglas de seguridad sobre el listado. Solo pinta lo recibido.
 
+El listado permite filtrar visualmente por:
+
+- estado
+- prioridad
+
+La prioridad tambien se muestra en cada tarjeta para identificar mejor las incidencias mas urgentes.
+
 ### Creacion rapida
 
 Desde `/incidents` se puede crear una incidencia con un modal rapido.
@@ -252,6 +259,7 @@ Implementado:
 - rutas protegidas
 - dashboards por rol
 - listado de incidencias
+- filtro de incidencias por estado y prioridad
 - creacion rapida
 - detalle de incidencia
 - edicion basica

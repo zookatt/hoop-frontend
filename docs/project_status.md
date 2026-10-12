@@ -41,6 +41,7 @@ Este documento resume las decisiones de frontend tomadas y el estado real del PM
 
 - Listado de incidencias.
 - Filtros visuales por estado.
+- Filtros visuales por prioridad.
 - Resumen de incidencias por estado.
 - Creacion rapida de incidencia.
 - Detalle en pagina `/incidents/:id`.
@@ -57,6 +58,7 @@ Este documento resume las decisiones de frontend tomadas y el estado real del PM
   - nombre
   - id
   - rol
+- Prioridad visible en las tarjetas para identificar urgencia.
 
 ### Usuarios
 

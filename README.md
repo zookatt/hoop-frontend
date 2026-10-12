@@ -14,6 +14,7 @@ Implementado hasta ahora:
 - rutas protegidas
 - dashboard segun rol
 - listado de incidencias
+- filtros de incidencias por estado y prioridad
 - creacion rapida de incidencias
 - pagina de detalle `/incidents/:id`
 - edicion basica de incidencias
