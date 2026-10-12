@@ -11,7 +11,7 @@ function goBack() {
 </script>
 
 <template>
-  <section class="mx-auto grid max-w-md gap-5 pb-6">
+  <section class="mx-auto grid max-w-md gap-5 pb-6 md:max-w-3xl lg:max-w-5xl">
     <BaseButton variant="secondary" size="sm" @click="goBack">
       Volver
     </BaseButton>
