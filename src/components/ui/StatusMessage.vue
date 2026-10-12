@@ -3,7 +3,7 @@ defineProps({
   variant: {
     type: String,
     default: "default",
-    validator: (value) => ["default", "error"].includes(value),
+    validator: (value) => ["default", "error", "success"].includes(value),
   },
 });
 </script>
@@ -14,6 +14,8 @@ defineProps({
     :class="
       variant === 'error'
         ? 'border-(--color-status-open) text-(--color-status-open)'
+        : variant === 'success'
+          ? 'border-(--color-accent) text-(--color-accent)'
         : 'border-(--color-border) text-(--color-text-secondary)'
     "
   >

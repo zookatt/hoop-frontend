@@ -17,12 +17,15 @@ export function useIncidentDetail() {
 
   const isSaving = ref(false);
   const saveErrorMessage = ref("");
+  const saveSuccessMessage = ref("");
 
   const incidentId = computed(() => route.params.id);
 
   async function fetchIncident() {
     isLoading.value = true;
     errorMessage.value = "";
+    saveErrorMessage.value = "";
+    saveSuccessMessage.value = "";
 
     try {
       incident.value = await getIncidentById(incidentId.value);
@@ -36,9 +39,11 @@ export function useIncidentDetail() {
   async function saveBasicInfo(payload) {
     isSaving.value = true;
     saveErrorMessage.value = "";
+    saveSuccessMessage.value = "";
 
     try {
       incident.value = await updateIncident(incidentId.value, payload);
+      saveSuccessMessage.value = "Cambios guardados correctamente.";
     } catch {
       saveErrorMessage.value = "No se han podido guardar los cambios.";
     } finally {
@@ -49,9 +54,11 @@ export function useIncidentDetail() {
   async function saveAssignment(payload) {
     isSaving.value = true;
     saveErrorMessage.value = "";
+    saveSuccessMessage.value = "";
 
     try {
       incident.value = await assignIncident(incidentId.value, payload);
+      saveSuccessMessage.value = "Asignacion guardada correctamente.";
     } catch {
       saveErrorMessage.value = "No se ha podido guardar la asignación.";
     } finally {
@@ -62,9 +69,11 @@ export function useIncidentDetail() {
   async function saveStatus(status) {
     isSaving.value = true;
     saveErrorMessage.value = "";
+    saveSuccessMessage.value = "";
 
     try {
       incident.value = await updateIncidentStatus(incidentId.value, status);
+      saveSuccessMessage.value = "Estado actualizado correctamente.";
     } catch {
       saveErrorMessage.value = "No se ha podido cambiar el estado.";
     } finally {
@@ -89,6 +98,7 @@ export function useIncidentDetail() {
     saveAssignment,
     saveBasicInfo,
     saveErrorMessage,
+    saveSuccessMessage,
     saveStatus,
   };
 }

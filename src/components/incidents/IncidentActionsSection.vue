@@ -33,6 +33,10 @@ defineProps({
     type: String,
     default: "",
   },
+  saveSuccessMessage: {
+    type: String,
+    default: "",
+  },
 });
 
 defineEmits(["save-assignment", "save-basic-info", "save-status"]);
@@ -42,6 +46,10 @@ defineEmits(["save-assignment", "save-basic-info", "save-status"]);
   <section class="grid gap-4 border-t border-(--color-border) pt-4">
     <StatusMessage v-if="saveErrorMessage" variant="error">
       {{ saveErrorMessage }}
+    </StatusMessage>
+
+    <StatusMessage v-if="saveSuccessMessage" variant="success">
+      {{ saveSuccessMessage }}
     </StatusMessage>
 
     <IncidentBasicEditForm

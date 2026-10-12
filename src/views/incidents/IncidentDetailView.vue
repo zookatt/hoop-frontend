@@ -14,6 +14,7 @@ const {
   saveAssignment,
   saveBasicInfo,
   saveErrorMessage,
+  saveSuccessMessage,
   saveStatus,
 } = useIncidentDetail();
 
@@ -48,6 +49,7 @@ const { allowedStatusValues, canAssign, canChangeStatus, canEdit, hasActions } =
         :incident="incident"
         :is-saving="isSaving"
         :save-error-message="saveErrorMessage"
+        :save-success-message="saveSuccessMessage"
         @save-assignment="saveAssignment"
         @save-basic-info="saveBasicInfo"
         @save-status="saveStatus"
