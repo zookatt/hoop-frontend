@@ -27,6 +27,23 @@ export function getIncidentPriorityLabel(priority) {
   return INCIDENT_PRIORITY_LABELS[priority] ?? priority;
 }
 
+export function getIncidentPriorityStyle(priority) {
+  const priorityColorByValue = {
+    HIGH: "--color-status-open",
+    MEDIUM: "--color-status-progress",
+    LOW: "--color-accent",
+  };
+
+  const priorityColor =
+    priorityColorByValue[priority] ?? "--color-text-secondary";
+
+  return {
+    color: `var(${priorityColor})`,
+    borderColor: `color-mix(in srgb, var(${priorityColor}) 35%, white)`,
+    backgroundColor: `color-mix(in srgb, var(${priorityColor}) 10%, white)`,
+  };
+}
+
 export function getIncidentDepartmentIcon(department) {
   const icons = {
     MAINTENANCE: {

@@ -1,24 +1,45 @@
 import { computed, onMounted, ref } from "vue";
 import { getIncidents } from "../core/api/incidentService";
 import {
+  INCIDENT_PRIORITY_FILTER_OPTIONS,
   INCIDENT_STATUS_OPTIONS,
   INCIDENT_SUMMARY_OPTIONS,
 } from "../shared/constants/incidentOptions";
 
+const PRIORITY_ORDER = {
+  HIGH: 1,
+  MEDIUM: 2,
+  LOW: 3,
+};
+
 export function useIncidents({ fetchOnMounted = true } = {}) {
   const incidents = ref([]);
+  const selectedPriority = ref("ALL");
   const selectedStatus = ref("ALL");
   const isLoading = ref(false);
   const errorMessage = ref("");
 
   const filteredIncidents = computed(() => {
-    if (selectedStatus.value === "ALL") {
-      return incidents.value;
-    }
+    return [...incidents.value]
+      .filter((incident) => {
+        if (selectedStatus.value === "ALL") {
+          return true;
+        }
 
-    return incidents.value.filter(
-      (incident) => incident.status === selectedStatus.value,
-    );
+        return incident.status === selectedStatus.value;
+      })
+      .filter((incident) => {
+        if (selectedPriority.value === "ALL") {
+          return true;
+        }
+
+        return incident.priority === selectedPriority.value;
+      })
+      .sort(
+        (firstIncident, secondIncident) =>
+          getPriorityOrder(firstIncident.priority) -
+          getPriorityOrder(secondIncident.priority),
+      );
   });
 
   const incidentStats = computed(() =>
@@ -32,6 +53,10 @@ export function useIncidents({ fetchOnMounted = true } = {}) {
   function countByStatus(status) {
     return incidents.value.filter((incident) => incident.status === status)
       .length;
+  }
+
+  function getPriorityOrder(priority) {
+    return PRIORITY_ORDER[priority] ?? 99;
   }
 
   const fetchIncidents = async () => {
@@ -58,6 +83,8 @@ export function useIncidents({ fetchOnMounted = true } = {}) {
     incidentStats,
     incidents,
     isLoading,
+    priorityOptions: INCIDENT_PRIORITY_FILTER_OPTIONS,
+    selectedPriority,
     selectedStatus,
     statusOptions: INCIDENT_STATUS_OPTIONS,
   };

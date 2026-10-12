@@ -48,6 +48,13 @@ export const INCIDENT_PRIORITY_OPTIONS = [
   { value: "HIGH", label: "Alta" },
 ];
 
+export const INCIDENT_PRIORITY_FILTER_OPTIONS = [
+  { value: "ALL", label: "Todas" },
+  { value: "HIGH", label: "Alta" },
+  { value: "MEDIUM", label: "Media" },
+  { value: "LOW", label: "Baja" },
+];
+
 export const INCIDENT_PRIORITY_LABELS = {
   LOW: "BAJA",
   MEDIUM: "MEDIA",

@@ -16,6 +16,8 @@ const {
   fetchIncidents,
   filteredIncidents,
   isLoading,
+  priorityOptions,
+  selectedPriority,
   selectedStatus,
   statusOptions,
 } = useIncidents();
@@ -60,19 +62,45 @@ function openIncidentDetail(incident) {
       </BaseButton>
     </div>
 
-    <nav
-      class="flex gap-2 overflow-x-auto pb-1"
-      aria-label="Filtros por estado"
-    >
-      <FilterButton
-        v-for="option in statusOptions"
-        :key="option.value"
-        :active="selectedStatus === option.value"
-        @click="selectedStatus = option.value"
-      >
-        {{ option.label }}
-      </FilterButton>
-    </nav>
+    <section class="grid gap-3">
+      <div class="grid gap-2">
+        <p class="text-xs font-bold uppercase text-(--color-text-secondary)">
+          Estado
+        </p>
+        <nav
+          class="flex gap-2 overflow-x-auto pb-1"
+          aria-label="Filtros por estado"
+        >
+          <FilterButton
+            v-for="option in statusOptions"
+            :key="option.value"
+            :active="selectedStatus === option.value"
+            @click="selectedStatus = option.value"
+          >
+            {{ option.label }}
+          </FilterButton>
+        </nav>
+      </div>
+
+      <div class="grid gap-2">
+        <p class="text-xs font-bold uppercase text-(--color-text-secondary)">
+          Prioridad
+        </p>
+        <nav
+          class="flex gap-2 overflow-x-auto pb-1"
+          aria-label="Filtros por prioridad"
+        >
+          <FilterButton
+            v-for="option in priorityOptions"
+            :key="option.value"
+            :active="selectedPriority === option.value"
+            @click="selectedPriority = option.value"
+          >
+            {{ option.label }}
+          </FilterButton>
+        </nav>
+      </div>
+    </section>
 
     <StatusMessage v-if="isLoading"> Cargando incidencias... </StatusMessage>
 

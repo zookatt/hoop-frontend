@@ -2,6 +2,8 @@
 import {
   getIncidentDepartmentIcon,
   getIncidentDepartmentLabel,
+  getIncidentPriorityLabel,
+  getIncidentPriorityStyle,
   getIncidentStatusLabel,
   getIncidentStatusStyle,
 } from "../../shared/utils/incidentFormatters";
@@ -57,11 +59,18 @@ const emit = defineEmits(["select"]);
           </span>
         </div>
 
-        <div class="flex items-center justify-between gap-3">
+        <div class="flex flex-wrap items-center justify-between gap-2">
           <span
-            class="inline-flex max-w-[55%] items-center gap-2 truncate rounded-md border border-(--color-border) bg-(--color-surface) px-3 py-1 text-sm font-medium text-(--color-text-secondary)"
+            class="inline-flex max-w-full items-center gap-2 truncate rounded-md border border-(--color-border) bg-(--color-surface) px-3 py-1 text-sm font-medium text-(--color-text-secondary)"
           >
             {{ getIncidentDepartmentLabel(incident.department) }}
+          </span>
+
+          <span
+            class="shrink-0 rounded-full border px-3 py-1 text-xs font-bold"
+            :style="getIncidentPriorityStyle(incident.priority)"
+          >
+            {{ getIncidentPriorityLabel(incident.priority) }}
           </span>
 
           <span
