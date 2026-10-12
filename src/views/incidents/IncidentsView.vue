@@ -8,6 +8,8 @@ import FilterButton from "../../components/ui/FilterButton.vue";
 import StatusMessage from "../../components/ui/StatusMessage.vue";
 import { useCreateIncident } from "../../composables/useCreateIncident";
 import { useIncidents } from "../../composables/useIncidents";
+import { getAuthUser } from "../../core/auth/authStorage";
+import { getDashboardRouteForUser } from "../../core/auth/roleRoutes";
 
 const {
   errorMessage,
@@ -29,6 +31,10 @@ const {
 
 const router = useRouter();
 
+function goToDashboard() {
+  router.push(getDashboardRouteForUser(getAuthUser()));
+}
+
 function openIncidentDetail(incident) {
   router.push({
     name: "incident-detail",
@@ -39,6 +45,10 @@ function openIncidentDetail(incident) {
 
 <template>
   <section class="mx-auto flex max-w-md flex-col gap-4 pb-6">
+    <BaseButton variant="secondary" size="sm" @click="goToDashboard">
+      Volver al panel
+    </BaseButton>
+
     <nav
       class="flex gap-2 overflow-x-auto pb-1"
       aria-label="Filtros por estado"
