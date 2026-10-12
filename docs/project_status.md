@@ -76,8 +76,7 @@ Este documento resume las decisiones de frontend tomadas y el estado real del PM
 - Recuperacion de password.
 - Dashboard con estadisticas.
 - Historial avanzado de incidencias cerradas.
-- Tests unitarios de componentes.
-- Tests de flujos principales.
+- Ampliar las pruebas a más vistas y componentes.
 - Mensajes de error mas especificos segun cada respuesta del backend.
 
 ## Archivos clave

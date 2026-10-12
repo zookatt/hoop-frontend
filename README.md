@@ -38,9 +38,9 @@ Implementado hasta ahora:
 - Tailwind CSS
 - Vitest
 
-Documentacion tecnica ampliada en [docs/frontend.md](docs/frontend.md).
+Documentación técnica y páginas preparadas para la wiki en [docs/wiki/Home.md](docs/wiki/Home.md).
 
-Resumen del estado del PMV en [docs/project_status.md](docs/project_status.md).
+El resumen del estado actual del PMV está en [docs/project_status.md](docs/project_status.md).
 
 ## Conexion con backend
 

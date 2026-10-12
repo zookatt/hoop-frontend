@@ -9,6 +9,8 @@ Este documento resume el estado actual del frontend de HOOP y como se organiza l
 - Vue Router
 - Axios
 - Tailwind CSS
+- Vitest
+- Vue Test Utils
 
 ## Flujo principal
 
@@ -30,16 +32,16 @@ Detalle / edicion de incidencia
 
 ## Rutas principales
 
-| Ruta | Vista | Uso |
-| --- | --- | --- |
-| `/login` | `LoginView` | Inicio de sesion |
-| `/admin` | `DashboardHomeView` | Panel de administrador |
-| `/reception` | `DashboardHomeView` | Panel de recepcion |
-| `/maintenance` | `DashboardHomeView` | Panel de mantenimiento |
-| `/cleaning` | `DashboardHomeView` | Panel de limpieza |
-| `/incidents` | `IncidentsView` | Listado de incidencias |
+| Ruta             | Vista                | Uso                                             |
+| ---------------- | -------------------- | ----------------------------------------------- |
+| `/login`         | `LoginView`          | Inicio de sesion                                |
+| `/admin`         | `DashboardHomeView`  | Panel de administrador                          |
+| `/reception`     | `DashboardHomeView`  | Panel de recepcion                              |
+| `/maintenance`   | `DashboardHomeView`  | Panel de mantenimiento                          |
+| `/cleaning`      | `DashboardHomeView`  | Panel de limpieza                               |
+| `/incidents`     | `IncidentsView`      | Listado de incidencias                          |
 | `/incidents/:id` | `IncidentDetailView` | Detalle, edicion, asignacion y cambio de estado |
-| `/admin/users` | `AdminUsersView` | Gestion basica de usuarios para administrador |
+| `/admin/users`   | `AdminUsersView`     | Gestion basica de usuarios para administrador   |
 
 Las rutas privadas usan `DashboardLayout` y requieren token guardado.
 
@@ -169,12 +171,12 @@ La seguridad real esta en backend. El frontend solo oculta acciones para mejorar
 
 Reglas visuales actuales:
 
-| Rol | Editar datos | Asignar | Cambiar estado |
-| --- | --- | --- | --- |
-| `ADMIN` | Si | Si | Si |
-| `RECEPTION` | Si | Si | Si |
-| `MAINTENANCE` | No | No | Solo `IN_PROGRESS` y `RESOLVED` |
-| `CLEANING` | No | No | Solo `IN_PROGRESS` y `RESOLVED` |
+| Rol           | Editar datos | Asignar | Cambiar estado                  |
+| ------------- | ------------ | ------- | ------------------------------- |
+| `ADMIN`       | Si           | Si      | Si                              |
+| `RECEPTION`   | Si           | Si      | Si                              |
+| `MAINTENANCE` | No           | No      | Solo `IN_PROGRESS` y `RESOLVED` |
+| `CLEANING`    | No           | No      | Solo `IN_PROGRESS` y `RESOLVED` |
 
 La logica esta en:
 
@@ -186,11 +188,11 @@ src/shared/utils/incidentPermissions.js
 
 Las tarjetas muestran un icono segun departamento:
 
-| Estado de asignacion | Icono |
-| --- | --- |
-| Sin asignar | `nuevo.png` |
-| Mantenimiento | `mantenimiento.png` |
-| Limpieza | `limpieza.png` |
+| Estado de asignacion | Icono               |
+| -------------------- | ------------------- |
+| Sin asignar          | `nuevo.png`         |
+| Mantenimiento        | `mantenimiento.png` |
+| Limpieza             | `limpieza.png`      |
 
 Los assets estan en:
 
@@ -250,6 +252,23 @@ Responsabilidades:
 - `useAdminUsers`: carga roles, lista usuarios y crea nuevos usuarios.
 - `useLoginFlow`: controla login y cambio de password inicial.
 
+## Pruebas
+
+La suite usa Vitest, jsdom y Vue Test Utils. Ejecutar:
+
+```bash
+npm run test:unit
+npm run test:coverage
+```
+
+Los umbrales mínimos configurados son 70% para statements, branches, functions
+y lines en autenticación, utilidades compartidas y composables centrales de
+login/incidencias. Las pruebas incluyen unidades de dominio e integración del
+formulario de login y de composables con servicios simulados. No hay actualmente
+pruebas end-to-end de navegador contra un backend real.
+
+Las páginas detalladas para la wiki están en [`docs/wiki/`](wiki/Home.md).
+
 ## Estado actual del PMV frontend
 
 Implementado:
@@ -274,6 +293,7 @@ Implementado:
 - traduccion visual de roles, prioridades, estados y departamentos
 - layout mobile-first
 - adaptacion sencilla a tablet y desktop
+- pruebas unitarias y de integración de los flujos centrales, con umbral de cobertura configurado
 
 Pendiente o mejora futura:
 
@@ -281,6 +301,6 @@ Pendiente o mejora futura:
 - cambiar rol de usuario desde frontend
 - desactivar usuario desde frontend
 - mensajes de error mas especificos segun respuesta del backend
-- tests de componentes y flujos principales
+- ampliar la cobertura a más vistas y componentes
 - dashboard con estadisticas
 - historial avanzado de incidencias cerradas
