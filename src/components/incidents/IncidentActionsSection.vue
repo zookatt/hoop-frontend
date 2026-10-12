@@ -1,9 +1,10 @@
 <script setup>
-import { computed } from "vue";
+import { computed, watch } from "vue";
 import IncidentAssignmentForm from "./IncidentAssignmentForm.vue";
 import IncidentBasicEditForm from "./IncidentBasicEditForm.vue";
 import IncidentStatusForm from "./IncidentStatusForm.vue";
 import StatusMessage from "../ui/StatusMessage.vue";
+import { useAssignableUsers } from "../../composables/useAssignableUsers";
 
 const props = defineProps({
   allowedStatusValues: {
@@ -44,6 +45,23 @@ defineEmits(["save-assignment", "save-basic-info", "save-status"]);
 
 const isClosed = computed(() => props.incident.status === "CLOSED");
 const actionsDisabled = computed(() => props.isSaving || isClosed.value);
+
+const {
+  fetchAssignableUsers,
+  isLoadingUsers,
+  users,
+  usersErrorMessage,
+} = useAssignableUsers();
+
+watch(
+  () => props.canAssign,
+  (canAssign) => {
+    if (canAssign) {
+      fetchAssignableUsers();
+    }
+  },
+  { immediate: true },
+);
 </script>
 
 <template>
@@ -71,6 +89,9 @@ const actionsDisabled = computed(() => props.isSaving || isClosed.value);
       v-if="canAssign"
       :disabled="actionsDisabled"
       :incident="incident"
+      :is-loading-users="isLoadingUsers"
+      :users="users"
+      :users-error-message="usersErrorMessage"
       @submit="$emit('save-assignment', $event)"
     />
 
