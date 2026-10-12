@@ -3,12 +3,15 @@ defineProps({
   title: { type: String, required: true },
   description: { type: String, required: true },
 });
+
+const emit = defineEmits(["click"]);
 </script>
 
 <template>
   <button
     type="button"
     class="flex w-full items-center justify-between rounded-lg border border-(--color-border) bg-(--color-background) p-4 text-left shadow-sm"
+    @click="emit('click')"
   >
     <span>
       <span class="block text-sm font-bold text-(--color-text)">
