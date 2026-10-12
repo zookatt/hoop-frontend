@@ -2,7 +2,12 @@
 import { computed, ref } from "vue";
 import { useRouter } from "vue-router";
 import BaseButton from "../../components/ui/BaseButton.vue";
-import { loginUser } from "../../core/api/authService";
+import {
+  changeInitialPassword,
+  loginUser,
+  PASSWORD_CHANGE_REQUIRED,
+} from "../../core/api/authService";
+import InitialPasswordChangeForm from "../../components/auth/InitialPasswordChangeForm.vue";
 import { getDashboardRouteForUser } from "../../core/auth/roleRoutes";
 import logoHoop from "../../assets/images/logo-hoop.png";
 
@@ -13,10 +18,13 @@ const password = ref("");
 const showPassword = ref(false);
 const isLoading = ref(false);
 const errorMessage = ref("");
-
+const requiresPasswordChange = ref(false);
+const isChangingPassword = ref(false);
+const passwordChangeErrorMessage = ref("");
+const trimmedEmail = computed(() => email.value.trim());
 const canSubmit = computed(
   () =>
-    email.value.trim() !== "" &&
+    trimmedEmail.value !== "" &&
     password.value.trim() !== "" &&
     !isLoading.value,
 );
@@ -31,17 +39,55 @@ async function submitLogin() {
 
   try {
     const { user } = await loginUser({
-      email: email.value.trim(),
+      email: trimmedEmail.value,
       password: password.value,
     });
 
     await router.push(getDashboardRouteForUser(user));
-  } catch {
+  } catch (error) {
+    if (error.code === PASSWORD_CHANGE_REQUIRED) {
+      requiresPasswordChange.value = true;
+      errorMessage.value = "";
+      passwordChangeErrorMessage.value = "";
+      return;
+    }
+
     errorMessage.value =
       "No se ha podido iniciar sesión. Revisa email y contraseña.";
   } finally {
     isLoading.value = false;
   }
+}
+
+async function submitInitialPasswordChange({ newPassword }) {
+  isChangingPassword.value = true;
+  passwordChangeErrorMessage.value = "";
+
+  try {
+    await changeInitialPassword({
+      email: trimmedEmail.value,
+      currentPassword: password.value,
+      newPassword,
+    });
+
+    const { user } = await loginUser({
+      email: trimmedEmail.value,
+      password: newPassword,
+    });
+
+    await router.push(getDashboardRouteForUser(user));
+  } catch {
+    passwordChangeErrorMessage.value =
+      "No se ha podido cambiar la contraseña. Revisa los datos.";
+  } finally {
+    isChangingPassword.value = false;
+  }
+}
+
+function cancelInitialPasswordChange() {
+  requiresPasswordChange.value = false;
+  passwordChangeErrorMessage.value = "";
+  password.value = "";
 }
 </script>
 
@@ -54,7 +100,11 @@ async function submitLogin() {
         <div
           class="grid h-24 w-24 place-items-center rounded-full border border-(--color-border) bg-(--color-background) p-3 shadow-sm"
         >
-          <img :src="logoHoop" alt="HOOP" class="h-full w-full object-contain" />
+          <img
+            :src="logoHoop"
+            alt="HOOP"
+            class="h-full w-full object-contain"
+          />
         </div>
 
         <h1 class="text-lg font-bold text-(--color-primary)">
@@ -64,12 +114,22 @@ async function submitLogin() {
           La App para la gestión de incidencias en alojamientos turísticos
         </p>
       </header>
-
+      <InitialPasswordChangeForm
+        v-if="requiresPasswordChange"
+        :email="trimmedEmail"
+        :error-message="passwordChangeErrorMessage"
+        :is-loading="isChangingPassword"
+        @cancel="cancelInitialPasswordChange"
+        @submit="submitInitialPasswordChange"
+      />
       <form
+        v-else
         class="grid gap-5 rounded-lg border border-(--color-border) bg-(--color-background) p-5 shadow-md"
         @submit.prevent="submitLogin"
       >
-        <label class="grid gap-2 text-xs font-bold uppercase text-(--color-text)">
+        <label
+          class="grid gap-2 text-xs font-bold uppercase text-(--color-text)"
+        >
           Correo electrónico
           <span class="relative">
             <svg
@@ -104,7 +164,9 @@ async function submitLogin() {
           </span>
         </label>
 
-        <label class="grid gap-2 text-xs font-bold uppercase text-(--color-text)">
+        <label
+          class="grid gap-2 text-xs font-bold uppercase text-(--color-text)"
+        >
           Contraseña
           <span class="relative">
             <svg
@@ -145,7 +207,9 @@ async function submitLogin() {
             <button
               type="button"
               class="absolute right-3 top-1/2 -translate-y-1/2 text-(--color-text-secondary)"
-              :aria-label="showPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'"
+              :aria-label="
+                showPassword ? 'Ocultar contraseña' : 'Mostrar contraseña'
+              "
               @click="showPassword = !showPassword"
             >
               <svg
