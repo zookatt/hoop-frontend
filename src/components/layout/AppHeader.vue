@@ -30,8 +30,11 @@ const emit = defineEmits(["home", "incidents", "logout", "profile", "users"]);
 
 const isMenuOpen = ref(false);
 
-const userLabel = computed(() => props.user?.email?.split("@")[0] || "Usuario");
-const userInitial = computed(() => userLabel.value.charAt(0).toUpperCase());
+const userEmail = computed(() => props.user?.email || "");
+const userName = computed(
+  () => props.user?.name || userEmail.value.split("@")[0] || "Usuario",
+);
+const userInitial = computed(() => userName.value.charAt(0).toUpperCase());
 
 function closeMenu() {
   isMenuOpen.value = false;
@@ -109,7 +112,7 @@ function selectMenuItem(eventName) {
 
             <button
               type="button"
-              class="grid h-8 w-8 place-items-center rounded-full bg-white/20 text-lg font-bold"
+              class="grid h-9 w-9 place-items-center rounded-full bg-white/20 text-lg font-bold"
               aria-label="Cerrar menu"
               @click="closeMenu"
             >
@@ -126,9 +129,12 @@ function selectMenuItem(eventName) {
 
             <span>
               <span class="block text-sm font-bold leading-tight">
-                {{ userLabel }}
+                {{ userName }}
               </span>
-              <span class="block text-xs text-white/80">
+              <span class="block max-w-40 truncate text-xs text-white/80">
+                {{ userEmail }}
+              </span>
+              <span class="block text-[11px] text-white/70">
                 {{ subtitle }}
               </span>
             </span>

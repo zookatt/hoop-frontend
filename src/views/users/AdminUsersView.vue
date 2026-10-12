@@ -18,7 +18,7 @@ function goBack() {
 
     <header class="grid gap-2">
       <h1 class="text-xl font-bold text-(--color-text)">
-        Gestion de usuarios
+        Gestion de usuarios para administracion
       </h1>
       <p class="text-sm text-(--color-text-secondary)">
         Crea cuentas internas y revisa el estado de acceso de cada trabajador.
