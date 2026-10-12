@@ -104,7 +104,7 @@ function selectMenuItem(eventName) {
       />
 
       <aside
-        class="relative z-10 flex h-full w-[72vw] min-w-232px max-w-280px flex-col bg-(--color-background) shadow-2xl"
+        class="relative z-10 flex h-full w-[72vw] min-w-[232px] max-w-[280px] flex-col bg-(--color-background) shadow-2xl"
       >
         <div class="bg-(--color-primary) px-5 py-7 text-white">
           <div class="mb-5 flex items-center justify-between gap-4">
