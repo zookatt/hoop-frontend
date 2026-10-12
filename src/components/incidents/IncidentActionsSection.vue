@@ -46,14 +46,16 @@ defineEmits(["save-assignment", "save-basic-info", "save-status"]);
 
     <IncidentBasicEditForm
       v-if="canEdit"
+      :disabled="isSaving"
       :incident="incident"
-      @save="$emit('save-basic-info', $event)"
+      @submit="$emit('save-basic-info', $event)"
     />
 
     <IncidentAssignmentForm
       v-if="canAssign"
+      :disabled="isSaving"
       :incident="incident"
-      @save="$emit('save-assignment', $event)"
+      @submit="$emit('save-assignment', $event)"
     />
 
     <IncidentStatusForm
