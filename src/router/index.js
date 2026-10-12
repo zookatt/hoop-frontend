@@ -6,6 +6,7 @@ import IncidentsView from "../views/incidents/IncidentsView.vue";
 import LoginView from "../views/login/LoginView.vue";
 import DashboardHomeView from "../views/dashboard/DashboardHomeView.vue";
 import IncidentDetailView from "../views/incidents/IncidentDetailView.vue";
+import AdminUsersView from "../views/users/AdminUsersView.vue";
 
 const routes = [
   {
@@ -57,6 +58,14 @@ const routes = [
         name: "incident-detail",
         component: IncidentDetailView,
       },
+      {
+        path: "admin/users",
+        name: "admin-users",
+        component: AdminUsersView,
+        meta: {
+          allowedRoles: ["ADMIN"],
+        },
+      },
     ],
   },
 ];
@@ -71,6 +80,14 @@ router.beforeEach((to) => {
 
   if (to.meta.requiresAuth && !loggedIn) {
     return { name: "login" };
+  }
+
+  if (to.meta.allowedRoles) {
+    const user = getAuthUser();
+
+    if (!to.meta.allowedRoles.includes(user?.role)) {
+      return getDashboardRouteForUser(user);
+    }
   }
 
   if (to.meta.guestOnly && loggedIn) {
