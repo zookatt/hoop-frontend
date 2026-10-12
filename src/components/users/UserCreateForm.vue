@@ -1,5 +1,6 @@
 <script setup>
 import { useUserCreateForm } from "../../composables/useUserCreateForm";
+import { getUserRoleLabel } from "../../shared/utils/userFormatters";
 import BaseButton from "../ui/BaseButton.vue";
 import StatusMessage from "../ui/StatusMessage.vue";
 
@@ -81,7 +82,7 @@ const { canSubmit, email, name, password, roleId, submitForm } =
           :key="role.id"
           :value="role.id"
         >
-          {{ role.name }}
+          {{ getUserRoleLabel(role.name) }}
         </option>
       </select>
     </label>

@@ -1,5 +1,6 @@
 <script setup>
 import { useAdminUsers } from "../../composables/useAdminUsers";
+import { getUserRoleLabel } from "../../shared/utils/userFormatters";
 import StatusMessage from "../ui/StatusMessage.vue";
 import UserCreateForm from "./UserCreateForm.vue";
 
@@ -61,7 +62,7 @@ const {
               <span
                 class="shrink-0 rounded-full border border-(--color-border) px-2 py-1 text-xs font-bold text-(--color-text-secondary)"
               >
-                {{ user.roleName }}
+                {{ getUserRoleLabel(user.roleName) }}
               </span>
             </div>
 

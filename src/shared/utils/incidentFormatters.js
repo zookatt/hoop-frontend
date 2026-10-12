@@ -1,5 +1,6 @@
 import {
   INCIDENT_DEPARTMENT_LABELS,
+  INCIDENT_PRIORITY_LABELS,
   INCIDENT_STATUS_META,
 } from "../constants/incidentOptions";
 import cleaningIcon from "../../assets/images/limpieza.png";
@@ -16,6 +17,14 @@ export function getIncidentDepartmentLabel(department) {
   }
 
   return INCIDENT_DEPARTMENT_LABELS[department] ?? department;
+}
+
+export function getIncidentPriorityLabel(priority) {
+  if (!priority || priority === "null") {
+    return "Sin prioridad";
+  }
+
+  return INCIDENT_PRIORITY_LABELS[priority] ?? priority;
 }
 
 export function getIncidentDepartmentIcon(department) {

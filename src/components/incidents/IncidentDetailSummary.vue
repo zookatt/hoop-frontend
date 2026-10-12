@@ -1,9 +1,11 @@
 <script setup>
 import {
   getIncidentDepartmentLabel,
+  getIncidentPriorityLabel,
   getIncidentStatusLabel,
   getIncidentStatusStyle,
 } from "../../shared/utils/incidentFormatters";
+import { getUserRoleLabel } from "../../shared/utils/userFormatters";
 
 defineProps({
   incident: {
@@ -29,7 +31,7 @@ function getUserMeta(id, roleName) {
     return "";
   }
 
-  return `ID ${id} - ${roleName ?? "Sin rol"}`;
+  return `ID ${id} - ${getUserRoleLabel(roleName)}`;
 }
 </script>
 
@@ -83,7 +85,7 @@ function getUserMeta(id, roleName) {
           Prioridad
         </p>
         <p class="mt-2 text-sm font-bold text-(--color-text)">
-          {{ incident.priority ?? "Sin prioridad" }}
+          {{ getIncidentPriorityLabel(incident.priority) }}
         </p>
       </div>
     </section>

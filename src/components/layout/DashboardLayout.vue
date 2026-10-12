@@ -4,11 +4,15 @@ import { useRouter } from "vue-router";
 import AppHeader from "./AppHeader.vue";
 import { clearAuthSession, getAuthUser } from "../../core/auth/authStorage";
 import { getDashboardRouteForUser } from "../../core/auth/roleRoutes";
+import { getUserRoleLabel } from "../../shared/utils/userFormatters";
 
 const router = useRouter();
 const authUser = computed(() => getAuthUser());
 const subtitle = computed(
-  () => authUser.value?.role || authUser.value?.email || "Usuario",
+  () =>
+    authUser.value?.role
+      ? getUserRoleLabel(authUser.value.role)
+      : authUser.value?.email || "Usuario",
 );
 const showUsersLink = computed(() => authUser.value?.role === "ADMIN");
 
