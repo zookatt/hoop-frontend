@@ -1,0 +1,66 @@
+export const INCIDENT_STATUS_OPTIONS = [
+  { value: "ALL", label: "Todas" },
+  { value: "OPEN", label: "Creada" },
+  { value: "IN_PROGRESS", label: "En curso" },
+  { value: "RESOLVED", label: "Resuelta" },
+  { value: "CLOSED", label: "Cerrada" },
+];
+
+export const INCIDENT_SUMMARY_OPTIONS = [
+  { status: "OPEN", label: "Creadas", variant: "open" },
+  { status: "IN_PROGRESS", label: "En curso", variant: "progress" },
+  { status: "RESOLVED", label: "Resueltas", variant: "resolved" },
+  { status: "CLOSED", label: "Cerradas", variant: "closed" },
+];
+
+export const INCIDENT_STATUS_META = {
+  OPEN: {
+    label: "Creada",
+    color: "--color-status-open",
+  },
+  IN_PROGRESS: {
+    label: "En curso",
+    color: "--color-status-progress",
+  },
+  RESOLVED: {
+    label: "Resuelta",
+    color: "--color-status-resolved",
+  },
+  CLOSED: {
+    label: "Cerrada",
+    color: "--color-status-closed",
+  },
+};
+
+export const INCIDENT_DEPARTMENT_LABELS = {
+  MAINTENANCE: "Mantenimiento",
+  CLEANING: "Limpieza",
+};
+
+export const INCIDENT_DEPARTMENT_OPTIONS = [
+  { value: "MAINTENANCE", label: "Mantenimiento" },
+  { value: "CLEANING", label: "Limpieza" },
+];
+
+export const INCIDENT_PRIORITY_OPTIONS = [
+  { value: "LOW", label: "Baja" },
+  { value: "MEDIUM", label: "Media" },
+  { value: "HIGH", label: "Alta" },
+];
+
+export const INCIDENT_PRIORITY_FILTER_OPTIONS = [
+  { value: "ALL", label: "Todas" },
+  { value: "HIGH", label: "Alta" },
+  { value: "MEDIUM", label: "Media" },
+  { value: "LOW", label: "Baja" },
+];
+
+export const INCIDENT_PRIORITY_LABELS = {
+  LOW: "BAJA",
+  MEDIUM: "MEDIA",
+  HIGH: "ALTA",
+};
+
+export const INCIDENT_STATUS_CHANGE_OPTIONS = INCIDENT_STATUS_OPTIONS.filter(
+  (option) => option.value !== "ALL",
+);
