@@ -1,6 +1,5 @@
 <script setup>
 import {
-  getIncidentDepartmentIcon,
   getIncidentDepartmentLabel,
   getIncidentStatusLabel,
   getIncidentStatusStyle,
@@ -49,12 +48,6 @@ defineProps({
           Departamento
         </p>
         <div class="mt-2 flex items-center gap-2">
-          <img
-            v-if="incident.department"
-            :src="getIncidentDepartmentIcon(incident.department)"
-            alt=""
-            class="size-7 object-contain"
-          />
           <p class="text-sm font-bold text-(--color-text)">
             {{
               incident.department
