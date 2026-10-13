@@ -14,40 +14,38 @@ const {
   incident,
   isLoading,
   isSaving,
-  saveAssignment,
-  saveBasicInfo,
   saveErrorMessage,
+  saveIncidentChanges,
   saveSuccessMessage,
-  saveStatus,
 } = useIncidentDetail();
 
 const { allowedStatusValues, canAssign, canChangeStatus, canEdit, hasActions } =
   useIncidentPermissions();
 
 const isCloseConfirmOpen = ref(false);
-const pendingStatus = ref(null);
+const pendingChanges = ref(null);
 
-function requestStatusSave(status) {
-  if (status === "CLOSED") {
-    pendingStatus.value = status;
+function requestChangesSave(changes) {
+  if (changes.status === "CLOSED") {
+    pendingChanges.value = changes;
     isCloseConfirmOpen.value = true;
     return;
   }
 
-  saveStatus(status);
+  saveIncidentChanges(changes);
 }
 
 function cancelCloseConfirm() {
-  pendingStatus.value = null;
+  pendingChanges.value = null;
   isCloseConfirmOpen.value = false;
 }
 
 async function confirmCloseIncident() {
-  if (!pendingStatus.value) {
+  if (!pendingChanges.value) {
     return;
   }
 
-  const wasSaved = await saveStatus(pendingStatus.value);
+  const wasSaved = await saveIncidentChanges(pendingChanges.value);
 
   if (wasSaved) {
     cancelCloseConfirm();
@@ -83,9 +81,7 @@ async function confirmCloseIncident() {
         :is-saving="isSaving"
         :save-error-message="saveErrorMessage"
         :save-success-message="saveSuccessMessage"
-        @save-assignment="saveAssignment"
-        @save-basic-info="saveBasicInfo"
-        @save-status="requestStatusSave"
+        @save="requestChangesSave"
       />
     </article>
   </section>
