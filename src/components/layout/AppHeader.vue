@@ -60,7 +60,7 @@ function selectMenuItem(eventName) {
 
 <template>
   <header
-    class="flex items-center justify-between border-b border-(--color-border) bg-(--color-background) px-4 py-3"
+    class="fixed left-0 top-0 z-50 flex h-[65px] w-full items-center justify-between border-b border-(--color-border) bg-(--color-background) px-4 py-3"
   >
     <div class="flex items-center gap-3">
       <button
