@@ -4,6 +4,7 @@ export function useUserCreateForm(props, emit) {
   const name = ref("");
   const email = ref("");
   const password = ref("");
+  const showPassword = ref(false);
   const roleId = ref("");
 
   const canSubmit = computed(
@@ -19,6 +20,7 @@ export function useUserCreateForm(props, emit) {
     name.value = "";
     email.value = "";
     password.value = "";
+    showPassword.value = false;
     roleId.value = "";
   }
 
@@ -43,6 +45,7 @@ export function useUserCreateForm(props, emit) {
     name,
     password,
     roleId,
+    showPassword,
     submitForm,
   };
 }
