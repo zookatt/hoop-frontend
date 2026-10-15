@@ -19,10 +19,10 @@ const emit = defineEmits(["select"]);
 </script>
 
 <template>
-  <li class="h-55">
+  <li class="h-37">
     <button
       type="button"
-      class="grid h-full w-full grid-rows-[auto_minmax(0,1fr)_auto] gap-2 overflow-hidden rounded-lg border border-(--color-border) bg-(--color-background) p-4 text-left shadow-sm transition hover:border-(--color-primary)"
+      class="grid w-full flex-col gap-2 overflow-hidden rounded-lg border border-(--color-border) bg-(--color-background) p-4 text-left shadow-sm transition hover:border-(--color-primary)"
       @click="emit('select', incident)"
     >
       <header class="flex min-w-0 items-start justify-between gap-3">
@@ -54,13 +54,11 @@ const emit = defineEmits(["select"]);
         </span>
       </header>
 
-      <p
-        class="line-clamp-3 overflow-hidden text-sm leading-6 text-(--color-text-secondary)"
-      >
+      <p class="overflow-hidden text-sm text-(--color-text-secondary)">
         Habitación {{ incident.roomNumber }}
       </p>
 
-      <footer class="grid min-w-0 gap-2">
+      <footer class="mt-auto flex min-w-0 gap-2">
         <span
           class="inline-flex max-w-[50%] justify-self-start truncate rounded-md border border-(--color-border) bg-(--color-surface) px-3 py-1 text-sm font-medium text-(--color-text-secondary)"
         >
