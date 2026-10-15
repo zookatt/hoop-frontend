@@ -60,7 +60,7 @@ function selectMenuItem(eventName) {
 
 <template>
   <header
-    class="fixed left-0 top-0 z-50 flex h-[65px] w-full items-center justify-between border-b border-(--color-border) bg-(--color-background) px-4 py-3"
+    class="fixed left-0 top-0 z-50 flex h-65px w-full items-center justify-between border-b border-(--color-border) bg-(--color-background) px-4 py-3"
   >
     <div class="flex items-center gap-3">
       <button
@@ -118,41 +118,47 @@ function selectMenuItem(eventName) {
 
   <Teleport to="body">
     <Transition
-      enter-active-class="transition duration-300 ease-out"
-      enter-from-class="-translate-x-full opacity-0"
-      enter-to-class="translate-x-0 opacity-100"
-      leave-active-class="transition duration-200 ease-in"
-      leave-from-class="translate-x-0 opacity-100"
-      leave-to-class="-translate-x-full opacity-0"
+      enter-active-class="transition-opacity duration-300"
+      enter-from-class="opacity-0"
+      enter-to-class="opacity-100"
+      leave-active-class="transition-opacity duration-200"
+      leave-from-class="opacity-100"
+      leave-to-class="opacity-0"
     >
-      <div
+      <button
         v-if="isMenuOpen"
-        class="fixed inset-0 z-50 flex md:hidden"
+        type="button"
+        class="fixed inset-0 z-60 bg-black/45 backdrop-blur-sm md:hidden"
+        aria-label="Cerrar menu"
+        @click="closeMenu"
+      />
+    </Transition>
+
+    <Transition
+      enter-active-class="transition duration-300 ease-out"
+      enter-from-class="-translate-x-full"
+      enter-to-class="translate-x-0"
+      leave-active-class="transition duration-200 ease-in"
+      leave-from-class="translate-x-0"
+      leave-to-class="-translate-x-full"
+    >
+      <AppSidebar
+        v-if="isMenuOpen"
+        class="fixed inset-y-0 left-0 z-70 w-[72vw] min-w-232px max-w-280px md:hidden"
         role="dialog"
         aria-modal="true"
-      >
-        <button
-          type="button"
-          class="absolute inset-0 bg-black/45 backdrop-blur-[2px]"
-          aria-label="Cerrar menu"
-          @click="closeMenu"
-        />
-
-        <AppSidebar
-          class="relative z-10 w-[72vw] min-w-232px max-w-280px"
-          :subtitle="subtitle"
-          :user="user"
-          show-close
-          :show-logout="showLogout"
-          :show-users-link="showUsersLink"
-          @close="closeMenu"
-          @home="selectMenuItem('home')"
-          @incidents="selectMenuItem('incidents')"
-          @logout="selectMenuItem('logout')"
-          @profile="selectMenuItem('profile')"
-          @users="selectMenuItem('users')"
-        />
-      </div>
+        :subtitle="subtitle"
+        :user="user"
+        show-close
+        :show-logout="showLogout"
+        :show-users-link="showUsersLink"
+        @close="closeMenu"
+        @home="selectMenuItem('home')"
+        @incidents="selectMenuItem('incidents')"
+        @logout="selectMenuItem('logout')"
+        @profile="selectMenuItem('profile')"
+        @users="selectMenuItem('users')"
+      />
     </Transition>
   </Teleport>
 </template>
