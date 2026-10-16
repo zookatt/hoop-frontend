@@ -19,53 +19,53 @@ const emit = defineEmits(["select"]);
 </script>
 
 <template>
-  <li
-    class="rounded-lg border border-(--color-border) bg-(--color-background) p-4 shadow-sm"
-  >
+  <li class="h-37">
     <button
       type="button"
-      class="flex min-h-36 w-full items-center gap-3 rounded-lg border border-(--color-border) bg-(--color-background) p-4 text-left shadow-sm"
+      class="grid w-full flex-col gap-2 overflow-hidden rounded-lg border border-(--color-border) bg-(--color-background) p-4 text-left shadow-sm transition hover:border-(--color-primary)"
       @click="emit('select', incident)"
     >
-      <img
-        v-if="getIncidentDepartmentIcon(incident.department).src"
-        :src="getIncidentDepartmentIcon(incident.department).src"
-        :alt="getIncidentDepartmentIcon(incident.department).label"
-        class="size-10 shrink-0 object-contain"
-      />
-      <article class="flex min-w-0 flex-1 flex-col gap-3">
-        <div class="flex items-start justify-between gap-3">
-          <div class="min-w-0">
-            <div class="flex flex-wrap items-center gap-2">
-              <h2 class="truncate text-base font-bold text-(--color-text)">
-                {{ incident.title }}
-              </h2>
+      <header class="flex min-w-0 items-start justify-between gap-3">
+        <div class="flex min-w-0 items-start gap-3">
+          <img
+            v-if="getIncidentDepartmentIcon(incident.department).src"
+            :src="getIncidentDepartmentIcon(incident.department).src"
+            :alt="getIncidentDepartmentIcon(incident.department).label"
+            class="size-10 shrink-0 object-contain"
+          />
 
-              <span class="shrink-0 text-sm text-(--color-text-secondary)">
-                #{{ incident.id }}
-              </span>
-            </div>
-
-            <p class="mt-2 line-clamp-2 text-sm text-(--color-text-secondary)">
-              Habitación {{ incident.roomNumber }} - {{ incident.description }}
-            </p>
-          </div>
-
-          <span
-            class="mt-1 shrink-0 text-xl text-(--color-text-secondary)"
-            aria-hidden="true"
-          >
-            &gt;
+          <span class="min-w-0">
+            <span
+              class="block truncate text-base font-bold text-(--color-text)"
+            >
+              {{ incident.title }}
+            </span>
+            <span class="block truncate text-sm text-(--color-text-secondary)">
+              #{{ incident.id }}
+            </span>
           </span>
         </div>
 
-        <div class="flex flex-wrap items-center justify-between gap-2">
-          <span
-            class="inline-flex max-w-full items-center gap-2 truncate rounded-md border border-(--color-border) bg-(--color-surface) px-3 py-1 text-sm font-medium text-(--color-text-secondary)"
-          >
-            {{ getIncidentDepartmentLabel(incident.department) }}
-          </span>
+        <span
+          class="shrink-0 text-xl leading-none text-(--color-text-secondary)"
+          aria-hidden="true"
+        >
+          &gt;
+        </span>
+      </header>
 
+      <p class="overflow-hidden text-sm text-(--color-text-secondary)">
+        Habitación {{ incident.roomNumber }}
+      </p>
+
+      <footer class="mt-auto flex min-w-0 gap-2">
+        <span
+          class="inline-flex max-w-[50%] justify-self-start truncate rounded-md border border-(--color-border) bg-(--color-surface) px-3 py-1 text-sm font-medium text-(--color-text-secondary)"
+        >
+          {{ getIncidentDepartmentLabel(incident.department) }}
+        </span>
+
+        <div class="flex min-w-0 items-center gap-2 overflow-hidden">
           <span
             class="shrink-0 rounded-full border px-3 py-1 text-xs font-bold"
             :style="getIncidentPriorityStyle(incident.priority)"
@@ -74,13 +74,13 @@ const emit = defineEmits(["select"]);
           </span>
 
           <span
-            class="shrink-0 rounded-full border px-3 py-1 text-sm font-bold"
+            class="min-w-0 truncate rounded-full border px-3 py-1 text-sm font-bold"
             :style="getIncidentStatusStyle(incident.status)"
           >
             {{ getIncidentStatusLabel(incident.status) }}
           </span>
         </div>
-      </article>
+      </footer>
     </button>
   </li>
 </template>

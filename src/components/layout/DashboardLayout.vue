@@ -41,7 +41,7 @@ function toggleSidebar() {
 </script>
 
 <template>
-  <div class="min-h-screen bg-(--color-surface)">
+  <div class="min-h-screen bg-(--color-surface) pt-[65px]">
     <AppHeader
       title="Incidencias"
       :is-sidebar-open="isSidebarOpen"

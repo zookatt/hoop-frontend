@@ -21,7 +21,7 @@ const props = defineProps({
 
 const emit = defineEmits(["submit"]);
 
-const { canSubmit, email, name, password, roleId, submitForm } =
+const { canSubmit, email, name, password, roleId, showPassword, submitForm } =
   useUserCreateForm(props, emit);
 </script>
 
@@ -61,12 +61,26 @@ const { canSubmit, email, name, password, roleId, submitForm } =
 
     <label class="grid gap-2 text-xs font-bold uppercase text-(--color-text)">
       Contraseña temporal
-      <input
-        v-model="password"
-        type="password"
-        required
-        class="h-11 rounded border border-(--color-border) px-3 text-sm text-(--color-text) outline-none focus:border-(--color-primary)"
-      />
+      <span class="relative">
+        <input
+          v-model="password"
+          :type="showPassword ? 'text' : 'password'"
+          autocomplete="new-password"
+          required
+          class="h-11 w-full rounded border border-(--color-border) px-3 pr-16 text-sm text-(--color-text) outline-none focus:border-(--color-primary)"
+        />
+
+        <button
+          type="button"
+          class="absolute right-3 top-1/2 -translate-y-1/2 text-sm font-bold text-(--color-text-secondary)"
+          :aria-label="
+            showPassword ? 'Ocultar contraseña temporal' : 'Mostrar contraseña temporal'
+          "
+          @click="showPassword = !showPassword"
+        >
+          {{ showPassword ? "Ocultar" : "Ver" }}
+        </button>
+      </span>
     </label>
 
     <label class="grid gap-2 text-xs font-bold uppercase text-(--color-text)">
