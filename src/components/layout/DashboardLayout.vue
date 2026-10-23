@@ -58,7 +58,7 @@ function toggleSidebar() {
     />
 
     <div
-      class="fixed bottom-0 left-0 top-[65px] z-40 hidden w-[280px] transform transition-transform duration-300 ease-out md:block"
+      class="fixed bottom-0 left-0 top-[65px] z-40 hidden w-[280px] transform transition-transform duration-300 ease-in-out md:block"
       :class="
         isSidebarOpen
           ? 'translate-x-0'
@@ -79,8 +79,16 @@ function toggleSidebar() {
       />
     </div>
 
-    <main class="mx-auto w-full max-w-6xl px-4 py-4 md:px-6 lg:px-8">
-      <RouterView />
-    </main>
+    <div
+      class="w-full transition-[padding-left] duration-300 ease-in-out"
+      :class="isSidebarOpen ? 'md:pl-[280px]' : 'md:pl-0'"
+    >
+      <main
+        class="mx-auto w-full max-w-6xl px-4 py-4 md:px-6 lg:px-8"
+        :class="{ 'md:max-w-none': isSidebarOpen }"
+      >
+        <RouterView />
+      </main>
+    </div>
   </div>
 </template>
